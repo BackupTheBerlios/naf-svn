@@ -104,6 +104,7 @@ class Naf_SimpleView {
 	 * @return string
 	 */
 	function escape($value, $quoteStyle = ENT_QUOTES, $charset = null) {
+		if (null === $charset) $charset = Naf::$response->getCharset();
 		return htmlspecialchars($value, $quoteStyle, $charset);
 	}
 	
