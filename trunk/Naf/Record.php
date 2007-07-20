@@ -31,7 +31,7 @@ abstract class Naf_Record {
 	 */
 	protected $_tableName;
 	protected $_sequenceName;
-	protected $_pk;
+	protected $_pk = 'id';
 	protected $_defaults;
 	/**#@-*/
 	
