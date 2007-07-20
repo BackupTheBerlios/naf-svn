@@ -228,6 +228,7 @@ abstract class Naf_Record {
 	 */
 	function __get($name)
 	{
+		if ('id' == $name) $name = $this->_pk;
 		return array_key_exists($name, $this->_data) ? $this->_data[$name] : null;
 	}
 	
@@ -239,6 +240,7 @@ abstract class Naf_Record {
 	 */
 	function __set($name, $value)
 	{
+		if ('id' == $name) $name = $this->_pk;
 		if (array_key_exists($name, $this->_setters))
 			$this->_data[$name] = call_user_func(array($this, $this->_setters[$name]), $value);
 		else
