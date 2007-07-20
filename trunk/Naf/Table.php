@@ -6,16 +6,18 @@ class Naf_Table {
 	 */
 	protected $_name;
 	protected $_sequence;
+	protected $_pk;
 	protected $_selection = '*';
 	/**#@-*/
 	
-	function __construct($name, $sequence = null)
+	function __construct($name, $pk = 'id', $sequence = null)
 	{
 		Naf::dbConnect();
 		$this->_name = $this->_from = $name;
+		$this->_pk = $pk;
 		
 		if (null === $sequence)
-			$this->_sequence = $this->_name . '_id_seq';
+			$this->_sequence = $this->_name . '_' . $this->_pk . '_seq';
 		else
 			$this->_sequence = $sequence;
 	}
@@ -40,7 +42,7 @@ class Naf_Table {
 	{
 		return $this->_statement('SELECT ' . $this->_selection . 
 				' FROM ' . $this->_name . 
-				' WHERE ' . $this->_name . '.id = ?', 
+				' WHERE ' . $this->_name . '.' . $this->_pk . ' = ?', 
 				array((int) $id))->fetch();
 	}
 	
@@ -75,7 +77,7 @@ class Naf_Table {
 		if (! ($count = count($idList)))
 			return new ArrayObject(array());
 		
-		$sql = $this->_name . '.id IN (?' . str_repeat(', ?', $count - 1) . ')';
+		$sql = $this->_name . '.' . $this->_pk . ' IN (?' . str_repeat(', ?', $count - 1) . ')';
 		$where = array_merge((array) $where, array($sql => $idList));
 		return $this->findAll($where, $order);
 	}
@@ -91,12 +93,12 @@ class Naf_Table {
 	function fetchPairs($column, $where = null, $order = null)
 	{
 		$selection = $this->_selection;
-		$this->setSelection($this->_name . '.id, ' . $this->_name . '.' . $column);
+		$this->setSelection($this->_name . '.' . $this->_pk . ', ' . $this->_name . '.' . $column);
 		$output = array();
 		
 		try {
 			foreach ($this->findAll($where, $order) as $row)
-				$output[$row['id']] = $row[$column];
+				$output[$row[$this->_pk]] = $row[$column];
 		} catch (Exception $e) {
 			$this->setSelection($selection);
 			throw $e;
@@ -175,7 +177,7 @@ class Naf_Table {
 			$updates[] = $field . ' = ?';
 		
 		$sql = 'UPDATE ' . $this->_name . ' SET ' . implode(', ', $updates) . 
-				' WHERE id = ?';
+				' WHERE ' . $this->_pk . ' = ?';
 		$binds = array_values($row);
 		$binds[] = $id;
 		$this->_statement($sql, $binds);
@@ -208,7 +210,7 @@ class Naf_Table {
 	 */
 	function delete($id)
 	{
-		$sql = 'DELETE FROM ' . $this->_name . ' WHERE id = ?';
+		$sql = 'DELETE FROM ' . $this->_name . ' WHERE ' . $this->_pk . ' = ?';
 		return $this->_statement($sql, array($id))->rowCount();
 	}
 	
@@ -285,10 +287,8 @@ class Naf_Table {
 	
 	protected function _removeId(&$row)
 	{
-		if (array_key_exists('id', $row))
-		{
-			unset($row['id']);
-		}
+		if (array_key_exists($this->_pk, $row))
+			unset($row[$this->_pk]);
 	}
 	
 	protected function _prepareBooleans(&$row)

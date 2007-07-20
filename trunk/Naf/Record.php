@@ -31,6 +31,7 @@ abstract class Naf_Record {
 	 */
 	protected $_tableName;
 	protected $_sequenceName;
+	protected $_pk;
 	protected $_defaults;
 	/**#@-*/
 	
@@ -46,7 +47,7 @@ abstract class Naf_Record {
 	 */
 	function __construct()
 	{
-		$this->_table = new Naf_Table($this->_tableName, $this->_sequenceName);
+		$this->_table = new Naf_Table($this->_tableName, $this->_pk, $this->_sequenceName);
 		$this->reset();
 	}
 	
@@ -61,7 +62,7 @@ abstract class Naf_Record {
 	function fetchEmpty()
 	{
 		$empty = $this->_defaults;
-		$empty['id'] = null;
+		$empty[$this->_pk] = null;
 		return $empty;
 	}
 	
@@ -73,8 +74,8 @@ abstract class Naf_Record {
 	 */
 	function import(array $data, $includeId = true)
 	{
-		if ((! $includeId) && array_key_exists('id', $data))
-			unset($data['id']);
+		if ((! $includeId) && array_key_exists($this->_pk, $data))
+			unset($data[$this->_pk]);
 		
 		foreach ($data as $key => $value)
 			$this->__set($key, $value);
@@ -101,18 +102,18 @@ abstract class Naf_Record {
 		if (! $this->_check()) return false;
 		
 		$rowData = array_intersect_key($this->_data, $this->_defaults);
-		if (empty($this->_data['id']))
-			return $this->_data['id'] = $this->_table->insert($rowData);
+		if (empty($this->_data[$this->_pk]))
+			return $this->_data[$this->_pk] = $this->_table->insert($rowData);
 		else
-			return $this->_table->update($rowData, $this->_data['id']);
+			return $this->_table->update($rowData, $this->_data[$this->_pk]);
 	}
 	
 	function delete()
 	{
-		if (empty($this->_data['id']))
+		if (empty($this->_data[$this->_pk]))
 			return false;
 		
-		return $this->_table->delete($this->_data['id']);
+		return $this->_table->delete($this->_data[$this->_pk]);
 	}
 	
 	/**
@@ -162,7 +163,7 @@ abstract class Naf_Record {
 	function reset()
 	{
 		$this->_data = $this->_defaults;
-		$this->_data['id'] = null;
+		$this->_data[$this->_pk] = null;
 	}
 	
 	/**
@@ -198,8 +199,8 @@ abstract class Naf_Record {
 	protected function _filterUnique($field, $value)
 	{
 		$where = array($field . ' = ?' => $value);
-		if (! empty($this->_data['id']))
-			$where[$this->_tableName . '.id != ?'] = $this->_data['id'];
+		if (! empty($this->_data[$this->_pk]))
+			$where[$this->_tableName . '.' . $this->_pk . ' != ?'] = $this->_data[$this->_pk];
 		
 		if ($this->_table->count($where))
 			return false;
