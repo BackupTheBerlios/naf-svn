@@ -134,6 +134,19 @@ class Naf_Table {
 	}
 	
 	/**
+	 * Get SQL clauses: SELECT ... FROM ... WHERE ...
+	 *
+	 * @param array | string $where
+	 * @return array ( SQL, BOUNDS )
+	 */
+	function getSelectSql($where)
+	{
+		$sql = "SELECT " . $this->_selection . " FROM " . $this->_name;
+		$bounds = $this->_appendWhere($sql, $where);
+		return array($sql, $bounds);
+	}
+	
+	/**
 	 * Insert a new row
 	 *
 	 * @param array $row
