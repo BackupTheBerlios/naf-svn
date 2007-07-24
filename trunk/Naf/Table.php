@@ -29,7 +29,9 @@ class Naf_Table {
 	 */
 	function setSelection($selection)
 	{
+		$oldValue = $this->_selection;
 		$this->_selection = implode(', ', (array) $selection);
+		return $oldValue;
 	}
 	
 	/**

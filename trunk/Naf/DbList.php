@@ -39,6 +39,15 @@ class Naf_DbList {
 		return $this->_table->_statement($sql, $binds);
 	}
 	
+	final function count()
+	{
+		$s = $this->_table->setSelection('COUNT(*)');
+		list($sql, $binds) = $this->_table->getSelectSql($this->_filters);
+		$this->_table->setSelection($s);
+		$this->_appendHaving($sql);
+		return $this->_table->_statement($sql, $binds)->fetchColumn();
+	}
+	
 	final function setGroupBy($groupBy)
 	{
 		$this->_groupBy = $groupBy;
