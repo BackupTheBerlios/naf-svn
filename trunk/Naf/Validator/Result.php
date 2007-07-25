@@ -34,7 +34,7 @@ class Naf_Validator_Result {
 	 */
 	function isError()
 	{
-		0 != count($this->_errors);
+		return 0 != count($this->_errors);
 	}
 	
 	function reset()
