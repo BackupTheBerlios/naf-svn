@@ -3,7 +3,6 @@
  * @see http://opensvn.scie.org/Naf
  */
 Naf = {
-	includeBase: '/jslib',
 	include: function(module) {
 		if (Naf.isLoaded(module)) return
 		while (module.indexOf('.') > 0) module = module.replace(/\./, "/")
@@ -44,5 +43,18 @@ Naf = {
 		o = []
 		for (i in obj) o.push(i)
 		alert(o.join(", "))
-	}
+	},
+	_getIncludeBase: function()
+    {
+        var scripts = document.getElementsByTagName("script");
+        for (var i = 0; i < scripts.length; ++i)
+        {
+            if (scripts[i].src.indexOf("Naf.js") != -1)
+            {
+                var lastSlash = scripts[i].src.lastIndexOf("/");
+                return scripts[i].src.substr(0, lastSlash);
+            }
+        }
+    },
+    includeBase: Naf._getIncludeBase(),
 }
