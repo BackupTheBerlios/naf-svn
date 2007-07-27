@@ -182,6 +182,10 @@ class Naf_Image {
 			throw new Naf_Image_Exception('Failed to save image');
 		
 		imagedestroy($this->_destination);
+		
+		// Important!!! kills all the intermediate changes!!!
+		$this->__construct($this->_filename);
+		
 		return true;
 	}
 	
