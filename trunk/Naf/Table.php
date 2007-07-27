@@ -10,6 +10,13 @@ class Naf_Table {
 	protected $_selection = '*';
 	/**#@-*/
 	
+	/**
+	 * Constructor
+	 *
+	 * @param string $name Table name
+	 * @param string $pk Primary key column name
+	 * @param string $sequence sequence name (leave empty for auto-gen)
+	 */
 	function __construct($name, $pk = 'id', $sequence = null)
 	{
 		Naf::dbConnect();
