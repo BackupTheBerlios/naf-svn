@@ -201,10 +201,10 @@ abstract class Naf_Record {
 		$where = array($field . ' = ?' => $value);
 		if (! empty($this->_data[$this->_pk]))
 			$where[$this->_tableName . '.' . $this->_pk . ' != ?'] = $this->_data[$this->_pk];
-		
+
 		if ($this->_table->count($where))
 			return false;
-		
+
 		return $value;
 	}
 	

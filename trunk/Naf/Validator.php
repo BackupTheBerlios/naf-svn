@@ -220,7 +220,7 @@ class Naf_Validator {
 	function check($input)
 	{
 		array_walk_recursive($input, array($this, '_prepareInput'));
-		
+
 		$this->_result->reset();
 		if ($this->_failRequired($input) || 
 			$this->_failEquals($input) || 
@@ -264,7 +264,7 @@ class Naf_Validator {
 		foreach ($input as $key => $value)
 			if (! empty($value))
 				$output[$key] = $value;
-		
+
 		foreach ($this->_rules as $index => $stack)
 		{
 			$output = filter_var_array($output, array_intersect_key($stack, $output));

@@ -72,6 +72,14 @@ class Naf_Upload {
 	}
 	
 	/**
+	 * @return string tmpname
+	 */
+	function getTmpName()
+	{
+		return $this->_tmpName;
+	}
+	
+	/**
 	 * @return string
 	 */
 	function getExtension()
@@ -109,10 +117,13 @@ class Naf_Upload {
 		return str_replace("\\", "", substr(self::CHECKNAME_REGEXP, 3, strlen(self::CHECKNAME_REGEXP) - 3 - 5));
 	}
 	
-	function ok()
+	function ok($exception = false)
 	{
 		if (UPLOAD_ERR_OK !== $this->_error)
-			return false;
+		{
+			if ($exception) $this->_exception();
+			else return false;
+		}
 		elseif (count($this->_extensions) && 
 			! in_array(strtolower($this->getExtension()), $this->_extensions))
 		{
@@ -154,8 +165,4 @@ class Naf_Upload {
 		
 		throw new Naf_Upload_Exception($message);
 	}
-}
-
-class Naf_Upload_Exception extends Exception {
-	
 }

@@ -484,12 +484,16 @@ final class Naf {
 			return;
 		
 		try {
+			try {
 			self::$pdo = new PDO(
 				self::$settings['database']['dsn'],
 				self::$settings['database']['username'],
 				self::$settings['database']['password'],
 				self::$settings['database']['options']);
 			self::$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			} catch (PDOException $e) {
+				die($e->getMessage());
+			}
 		} catch (PDOException $e) {
 			die('DB Connection failed');
 		}
