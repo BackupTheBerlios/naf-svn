@@ -6,6 +6,7 @@ Naf = {
 	include: function(module) {
 		if (Naf.isLoaded(module)) return
 		while (module.indexOf('.') > 0) module = module.replace(/\./, "/")
+		if (null == Naf.includeBase) Naf.includeBase = Naf._getIncludeBase()
 		document.write('<script type="text/javascript" src="' + Naf.includeBase + '/' + module + '.js"></script>')
 	},
 	modules: [],
@@ -56,5 +57,25 @@ Naf = {
             }
         }
     },
-    includeBase: Naf._getIncludeBase(),
+    includeBase: null,
+    Form: {
+		/**
+		 * Trigger form submit. Doesn't use submit() method, because if we did,
+		 * no "submit" event would be dispatched.
+		 */
+		triggerSubmit: function (form)
+		{
+			form = $(form)
+			if (Prototype.Browser.IE)
+			{
+				form.fireEvent('onsubmit')
+			}
+			else
+			{
+				var event = document.createEvent('HTMLEvents')
+				event.initEvent( 'submit', true, true);
+				form.dispatchEvent(event);
+			}
+		}
+	}
 }
