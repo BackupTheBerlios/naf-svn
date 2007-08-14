@@ -364,8 +364,6 @@ final class Naf {
 	{
 		try {
 			
-			ob_start();
-			
 			self::$response->exposeStatus();
 			self::$response->exposeContentType();
 			self::$response->exposeLanguage();
@@ -375,11 +373,7 @@ final class Naf {
 			$view->registerHelper(self::$viewHelpers);
 			$view->render(self::$response->getView());
 			
-			ob_end_flush();
-			
 		} catch (Exception $e) {
-			
-			ob_end_clean();
 			
 			if ($action = self::handleException($e))
 				self::perform($action);
@@ -543,6 +537,10 @@ final class Naf {
 		if ($errno & error_reporting())
 		{
 			throw new Naf_Exception_Php($errstr, $errno);
+		}
+		else
+		{
+			return true;
 		}
 	}
 	

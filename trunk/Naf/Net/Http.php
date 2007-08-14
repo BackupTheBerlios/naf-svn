@@ -85,9 +85,9 @@ class Naf_Net_Http {
 				break;
 			
 			list($name, $value) = explode(":", $line, 2);
-			$pos = strpos($value, 'filename=');
-			if (false !== $pos)
-				$this->responseFilename = substr($value, $pos + 9);
+			$value = trim($value);
+			if (preg_match("/filename\s*=\s*(.+)/i", $value, $matches))
+				$this->responseFilename = $matches[1];
 			
 			$this->responseHeaders[strtolower($name)] = $value;
 		}
