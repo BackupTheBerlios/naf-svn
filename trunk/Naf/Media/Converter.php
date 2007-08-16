@@ -51,7 +51,7 @@ abstract class Naf_Media_Converter
 	 *
 	 * @param string $filename - passed by reference because sometimes there is a need to change the filename,
 	 * 								or otherwise the backend will produce an error
-	 * @return Naf_Media_Info - information for the newly created
+	 * @return Naf_Media_Info - information for the newly created media file.
 	 * @throws Naf_Media_Exception
 	 */
 	abstract function convert(&$filename, $start = 0, $duration = null);
