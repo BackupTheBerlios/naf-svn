@@ -5,10 +5,6 @@ div.naf_title_pane_header {
 	cursor:pointer;
 	background-color:#eee;
 }
-div.naf_title_pane_header:first-letter {
-	font-size:larger;
-	color:gray;
-}
 div.naf_title_pane_content {
 	border:1px solid silver;
 	border-style:none solid solid;
@@ -25,6 +21,34 @@ button.naf_calendar {
 	background:transparent url("naf/calendar.png") top left no-repeat;
 }
 
+/* Naf.Widget.TabSwitch */
+div.naf_tabswitch_container div.naf_tabswitch_tab_pane {
+	border:1px solid silver;
+	padding:.5em;
+	clear:both;
+}
+div.naf_tabswitch_container ul.horizontal li {
+	border-style:solid solid none none;
+	border-width:1px;
+	border-color:silver;
+	background-color:#eee;
+	padding:.2em 1em;
+	cursor:pointer;
+}
+div.naf_tabswitch_container ul.horizontal li.first-child {
+	border-left:1px solid silver;
+}
+div.naf_tabswitch_container ul.horizontal li.naf_tabswitch_tab_active {
+	background-color:white;
+}
+
+/* loading... */
+div.loading {
+	background:transparent url("naf/loading.gif") top left no-repeat;
+	width:32px;
+	height:32px;
+}
+
 /* error-list */
 ul#displayErrorList {
 	color:red;
@@ -35,7 +59,6 @@ ul#displayErrorList {
 
 .invalid {
 	background-color:pink;
-	border:auto;
 }
 
 /* Horizontal <ul>, used for menus */
@@ -60,9 +83,9 @@ pre.captcha {
 	border:1px solid silver;
 	color: #000000;
 	background-color: #FFFFFF;
-	font-size: 8px;
+	font-size: 6px;
 	font-family: "Courier New", Courier, mono;
-	line-height: 10px;
+	line-height: 7px;
 }
 
 /* Forms */
@@ -74,9 +97,9 @@ form.naf {
 
 /* Hide from IE5-mac. Only IE-win sees this. \*/
  
-form.naf {
-	height: 1%;
-}
+//form.naf {
+//	height: 1%;
+//}
  
 /* End hide from IE5/mac */
 
@@ -91,20 +114,18 @@ form.naf label, form.naf .label {
 	text-align:right;
 	white-space:nowrap;
 }
-form.naf label:first-letter, form.naf .label:first-letter {
-	font-size:larger;
-	color:darkred;
-}
 form.naf label.right {
 	clear:none;
 	text-align:left;
 }
 form.naf .required {
+	float:left;
 	color:darkred;
 }
 form.naf .inline {
 	width:auto;
 	clear:none;
+	float:left;
 }
 form.naf br {
 	clear:both;
