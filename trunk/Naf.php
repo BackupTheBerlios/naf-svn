@@ -99,10 +99,13 @@ final class Naf {
 	/**
 	 * @param string $mode Settings file name (without extension)
 	 */
-	static function setUp($mode)
+	static function setUp($mode = null)
 	{
-		include APP_CONF_ROOT . $mode . '.php';
-		self::$settings = $settings;
+		if (null === self::$settings)
+		{
+			include APP_CONF_ROOT . $mode . '.php';
+			self::$settings = $settings;
+		}
 		
 		if (empty(self::$settings['autoload_map']))
 			self::$settings['autoload_map'] = array();
