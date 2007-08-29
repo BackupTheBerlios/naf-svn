@@ -65,11 +65,19 @@ Naf = {
     includeBase: null,
     
     /**
+     * Navigate to URL
+     * @param string url
+     */
+    redirect: function(url) {
+    	window.location.href = url
+    },
+    
+    /**
      * Widgets? Widgets... Widgets!
      */
     
     Widget: {
-    	all:['TitlePane', 'Calendar']
+    	all:['TitlePane', 'Calendar', 'TabSwitch']
     },
     widgetize: function() {
     	for (var i = 0; i < Naf.Widget.all.length; ++i)
@@ -98,6 +106,40 @@ Naf = {
 				}
             }
         }
+    },
+    
+    /**
+     * Load HTML into <element> - with a help of XHR.
+     * Apply necessary parsing also.
+     */
+    
+    Ajax: {
+    	load: function(element, src) {
+    		if (arguments.length < 2)
+    			src = element.getAttribute('src')
+    		
+    		if ((! src) || element.getAttribute('loaded') || ! element.visible()) return;
+    		
+    		var loading = element.appendChild(document.createElement('div'))
+    		loading.className = 'loading'
+
+    		element.setAttribute('loaded', '1')
+			new Ajax.Request(src, {
+				method:"get",
+				onSuccess:function(r) {
+					try {
+						element.innerHTML = r.responseText
+						Naf.parseWidgets(element.getElementsByTagName('div'))
+						Naf.Form.ajaxifyAll(null, element.getElementsByTagName('form'))
+					} catch (e) {
+						alert(e.message)
+					}
+				},
+				onFailure:function(r) {
+					alert("Request failed")
+				}
+			});
+    	}
     },
     
     /**
@@ -173,15 +215,19 @@ Naf = {
 				
 			}, false);
 		},
-		ajaxifyAll: function()
+		ajaxifyAll: function(e, nodeList)
 		{
-			for (var i = 0; i < document.forms.length; ++i)
+			if (2 > arguments.length)
+				nodeList = document.getElementsByTagName('form')
+			
+			for (var i = 0; i < nodeList.length; ++i)
 			{
-				if ('client' != document.forms[i].getAttribute('runat'))
+				var f = nodeList.item(i)
+				if ('client' != f.getAttribute('runat'))
 				{
-					Naf.Form.ajaxify(document.forms[i])
+					Naf.Form.ajaxify(f)
 				}
-				Naf.parseWidgets(document.forms[i].getElementsByTagName('input'))
+				Naf.parseWidgets(f.getElementsByTagName('input'))
 			}
 		},
 		validate: function(f, modal)
@@ -327,6 +373,9 @@ Naf = {
 			}
 		},
 		filled: function(element) {
+			if (! element.value) return false
+			if ('checkbox' == element.getAttribute('type'))
+				return element.checked
 			return null != element.value.match(/[^\s]/)
 		},
 		passPattern: function(element, pattern) {
