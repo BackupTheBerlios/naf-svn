@@ -13,8 +13,9 @@ if (! Naf.isLoaded('Naf.Widget.TitlePane')) {
 			titleNode.style.marginTop = d.getStyle('margin-top')
 			d.style.marginTop = '0'
 			
-			Naf.Widget.TitlePane.load(d)
+			Naf.Ajax.load(d)
 			
+			/* we're inside a meta-widget - accordeon */
 			var a = d.getAttribute('accordeon')
 			if (a)
 			{
@@ -27,7 +28,7 @@ if (! Naf.isLoaded('Naf.Widget.TitlePane')) {
 
 			Event.observe(titleNode, 'click', function(e) {
 				if (! d.visible())
-				{
+				{/* hide accordeon members */
 					var a = d.getAttribute('accordeon')
 					if (a)
 					{
@@ -39,18 +40,11 @@ if (! Naf.isLoaded('Naf.Widget.TitlePane')) {
 						}
 					}
 				}
-				Effect.toggle(d, 'blind')
-				Naf.Widget.TitlePane.load(d)
+				d.toggle()
+				setTimeout(function(){Naf.Ajax.load(d)}, 100)
 			}, false)
 			
 			d.parentNode.insertBefore(titleNode, d)
-		},
-		/* ajax-load URL into <div> */
-		load: function(d) {
-			if ((! d.getAttribute('src')) || d.getAttribute('loaded') || ! d.visible()) return;
-			d.innerHTML = 'loading...'
-			d.setAttribute('loaded', '1')
-			new Ajax.Updater(d, d.getAttribute('src'), {})
 		},
 		accordeon: {}
 	}
