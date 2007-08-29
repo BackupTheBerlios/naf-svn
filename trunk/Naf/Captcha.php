@@ -63,7 +63,17 @@ class Naf_Captcha {
     * @private      array
     * @access   private
     */
-    private $charmap = array ('WXEKSZB', '8@OCa', '$#!|L%', '*~', '+x', ':;i', '.\'', ',', " ");
+    private $charmap = array ('WXEKSZB', 
+    	'8@OCa', 
+    	'$#!|L%', 
+    	'*~', 
+    	'+x', 
+    	':;i', 
+    	'.\'', 
+    	',', 
+    	",.%~                                                                                                         ");
+    	/* the last entry in charmap is actually adding some noise to the result */
+    
     /**
      * Length for each charmap entry
      *
@@ -87,6 +97,9 @@ class Naf_Captcha {
 			$this->text = $this->generateText();
 		else
 			$this->text = $text;
+
+		if (rand(0, 1))
+			$this->charmap = array_reverse($this->charmap);
 		
 		foreach ($this->charmap as $n => $c)
     		$this->charmapLen[$n] = strlen($c) - 1;
