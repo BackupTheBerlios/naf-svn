@@ -28,15 +28,17 @@ class Naf_Cache {
 	}
 	function store()
 	{
-		$headers = array();
-		$output = ob_get_flush();
+		header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
+		$cache = "";
 		foreach (apache_response_headers() as $key => $value)
 		{
 			if ('set-cookie' != strtolower($key))
-				$headers[] = $key . ': ' . $value;
+				$cache .= $key . ': ' . $value . "\r\n";
 		}
-
-		file_put_contents($this->_filename, implode("\r\n", $headers) . "\r\n\r\n" . $output);
+		
+		$cache .= "\r\n";
+		$cache .= ob_get_flush();
+		file_put_contents($this->_filename, $cache);
 	}
 	
 	protected function _upToDate()

@@ -271,7 +271,10 @@ final class Naf {
 	{
 		self::$cache = new Naf_Cache($root, $key, $lifetime);
 		if (self::$cache->start())
+		{
+			echo microtime(true) - self::$response->timerStart;
 			exit();
+		}
 	}
 	
 	/**

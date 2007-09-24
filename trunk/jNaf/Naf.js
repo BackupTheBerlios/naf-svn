@@ -77,7 +77,7 @@ Naf = {
      */
     
     Widget: {
-    	all:['TitlePane', 'Calendar', 'TabSwitch']
+    	all:['TitlePane', 'Calendar', 'TabSwitch', 'TreeMenu']
     },
     widgetize: function() {
     	for (var i = 0; i < Naf.Widget.all.length; ++i)
@@ -169,48 +169,49 @@ Naf = {
 
 			Event.observe(f, 'submit', function(e) {
 				
-				if (! e)
-					e = window.event
-
-				Event.stop(e)
-				
 				if (! Naf.Form.validate(f, true))
 				{
-					return
+					Event.stop(e)
+					return false
 				}
 				
-				Naf.Form.disableSubmission(f)
-				
-				/* do AJAX */
-				Form.request(f, {
-					onSuccess:function(r) {
-						try {
-							json = r.responseText.evalJSON()
-							if ('error' == json.code)
-							{
-								Naf.Form.error(f, json.error_list)
-							} else {
-								Naf.Form.done(f, json.data)
-							}
-						} catch (e) {
-							alert(e.message)
-						}
-						Naf.Form.enableSubmission(f)
-					},
-					onFailure:function(r) {
-						Naf.Form.enableSubmission(f)
-						Naf.Form.error(f, ['HTTP request failed!'])
-					}
-				});
-				
-				for (var i = 0; i < f.elements.length; ++i)
+				if ('client' != f.getAttribute('runat'))
 				{
-					if (('input' == f.elements[i].tagName.toLowerCase()) && 
-						('submit' == f.elements[i].getAttribute('type')))
+					/* only <form>s that were marked runat="client" - escape from being ajaxified... */
+					Event.stop(e)
+					Naf.Form.disableSubmission(f)
+					/* do AJAX */
+					Form.request(f, {
+						onSuccess:function(r) {
+							try {
+								json = r.responseText.evalJSON()
+								if ('error' == json.code)
+								{
+									Naf.Form.error(f, json.error_list)
+								} else {
+									Naf.Form.done(f, json.data)
+								}
+							} catch (e) {
+								alert(e.message)
+							}
+							Naf.Form.enableSubmission(f)
+						},
+						onFailure:function(r) {
+							Naf.Form.enableSubmission(f)
+							Naf.Form.error(f, ['HTTP request failed!'])
+						}
+					});
+					
+					for (var i = 0; i < f.elements.length; ++i)
 					{
-						f.elements[i].disabled = true
-						f.elements[i].setAttribute('enable_me', '1')
+						if (('input' == f.elements[i].tagName.toLowerCase()) && 
+							('submit' == f.elements[i].getAttribute('type')))
+						{
+							f.elements[i].disabled = true
+							f.elements[i].setAttribute('enable_me', '1')
+						}
 					}
+				
 				}
 				
 			}, false);
@@ -223,10 +224,7 @@ Naf = {
 			for (var i = 0; i < nodeList.length; ++i)
 			{
 				var f = nodeList.item(i)
-				if ('client' != f.getAttribute('runat'))
-				{
-					Naf.Form.ajaxify(f)
-				}
+				Naf.Form.ajaxify(f)
 				Naf.parseWidgets(f.getElementsByTagName('input'))
 			}
 		},

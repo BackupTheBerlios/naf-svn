@@ -134,4 +134,9 @@ class Naf_SimpleView {
 		
 		throw new Naf_Exception('Variable ' . $name . ' could not be found');
 	}
+	
+	function __set($name, $value)
+	{
+		$this->_vars[$name] = $value;
+	}
 }

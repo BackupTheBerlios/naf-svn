@@ -124,7 +124,7 @@ class Naf_Response {
 	function setAjaxResponse($errorList, $data = null)
 	{
 		$this->_data['ajax'] = array(
-			'errorList' => $errorList,
+			'errorList' => (array) $errorList,
 			'data' => $data);
 	}
 	

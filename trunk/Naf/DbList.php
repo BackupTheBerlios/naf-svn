@@ -30,7 +30,7 @@ class Naf_DbList {
 	/**
 	 * @return PDOStatement
 	 */
-	final function export($pageNumber = null, $pageSize = null) {
+	function export($pageNumber = null, $pageSize = null) {
 		list($sql, $binds) = $this->_table->getSelectSql($this->_filters);
 		$this->_appendGroupBy($sql);
 		$this->_appendHaving($sql);
@@ -74,13 +74,13 @@ class Naf_DbList {
 		return $this;
 	}
 	
-	final private function _appendGroupBy($sql)
+	final private function _appendGroupBy(&$sql)
 	{
 		if (null !== $this->_groupBy)
 			$sql .= ' GROUP BY ' . implode(', ', (array) $this->_groupBy);
 	}
 	
-	final private function _appendHaving($sql)
+	final private function _appendHaving(&$sql)
 	{
 		if (null !== $this->_having)
 			$sql .= ' HAVING ((' . implode(') AND (', (array) $this->_having) . '))';
