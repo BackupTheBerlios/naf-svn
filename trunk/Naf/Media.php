@@ -119,18 +119,18 @@ class Naf_Media {
 		if (class_exists($class, false) || is_file(dirname(__FILE__) . '/Media/Snapshot/' . self::$snapshotBackend . '.php'))
 			return new $class(self::$snapshotBackendCommand, $source);
 		
-		throw new Naf_Media_Exception("Cannot initialize media-information reader $class");
+		throw new Naf_Media_Exception("Cannot initialize snapshot-maker $class");
 	}
 	
 	static function setSnapshotBackend($backend)
 	{
 		// prepare $backend string to be used in a class name
-		self::$converterBackend = self::sanitizeBackend($backend);
+		self::$snapshotBackend = self::sanitizeBackend($backend);
 	}
 	
 	static function setSnapshotBackendCommand($command)
 	{
-		self::$converterBackendCommand = $command;
+		self::$snapshotBackendCommand = $command;
 	}
 	
 	static private function sanitizeBackend($backend)
