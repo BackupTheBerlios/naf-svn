@@ -9,7 +9,7 @@
  * @version 1.0
  */
 
-class Yacl {
+class Naf_Acl {
 
 	/**
 	 * @var array
