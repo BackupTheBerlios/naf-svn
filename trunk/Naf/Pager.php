@@ -5,6 +5,8 @@
  */
 
 class Naf_Pager implements Iterator {
+	
+	const AUTORESOLVE = -1;
 
 	/**
 	 * row count
@@ -58,10 +60,14 @@ class Naf_Pager implements Iterator {
 	 * @param int $pageNumber defaults to 1
 	 * @param int $pageSize defaults to 20
 	 */
-	function __construct($rows, $pageNumber = null, $pageSize = null)
+	function __construct($rows, $pageNumber = self::AUTORESOLVE, $pageSize = null)
 	{
 		$this->rows = (int) $rows;
 		
+		if (self::AUTORESOLVE === $pageNumber)
+		{
+			$pageNumber = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT, array('options' => array('min_range' => 1)));
+		}
 		if (1 > (int) $pageNumber) $pageNumber = 1;
 		if (1 > (int) $pageSize) $pageSize = 20;
 		
@@ -99,6 +105,16 @@ class Naf_Pager implements Iterator {
 		
 		$view->pager = $this;
 		return $view->render($this->template);
+	}
+	
+	function getPageNumber()
+	{
+		return $this->pageNumber;
+	}
+	
+	function getPageSize()
+	{
+		return $this->pageSize;
 	}
 	
 	/**
