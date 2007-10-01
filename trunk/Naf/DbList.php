@@ -48,24 +48,53 @@ class Naf_DbList {
 		return $this->_table->_statement($sql, $binds)->fetchColumn();
 	}
 	
+	/**
+	 * @param string $groupBy
+	 * @return Naf_DbList $this
+	 */
 	final function setGroupBy($groupBy)
 	{
 		$this->_groupBy = $groupBy;
+		return $this;
 	}
-	
+	/**
+	 * @param string $having
+	 * @return Naf_DbList $this
+	 */
 	final function setHaving($having)
 	{
 		$this->_having = $having;
+		return $this;
 	}
-	
+	/**
+	 * @param string $order
+	 * @return Naf_DbList $this
+	 */
 	final function setOrder($order)
 	{
 		$this->_order = $order;
 		return $this;
 	}
-	
+	/**
+	 * @param string $sql
+	 * @param array $binds
+	 * @return Naf_DbList $this
+	 */
 	final function registerFilter($sql, $binds = null) {
 		$this->_filters[$sql] = $binds;
+		return $this;
+	}
+	/**
+	 * Register filter ONLY IF $condition evaluates to TRUE
+	 * 
+	 * @param bool $condition
+	 * @param string $sql
+	 * @param array $binds
+	 * @return Naf_DbList $this
+	 */
+	final function registerFilterIf($condition, $sql, $binds = null) {
+		if ($condition)
+			$this->_filters[$sql] = $binds;
 		return $this;
 	}
 	
