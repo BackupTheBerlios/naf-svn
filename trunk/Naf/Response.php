@@ -1,46 +1,101 @@
 <?php
 
+/**
+ * Class encapsulation for HTTP response (including AJAX response)
+ */
+
 class Naf_Response {
-	
+
+	/**
+	 * View template to render
+	 *
+	 * @var string
+	 */
 	protected $_view;
+	
+	/**
+	 * Response data
+	 *
+	 * @var mixed[] associative array
+	 */
 	protected $_data = array();
+	
+	/**
+	 * @var string
+	 */
 	protected $_title;
+	
+	/**
+	 * @var array
+	 */
 	protected $_keywords = array();
-	protected $_description = array();
+	/**
+	 * @var array
+	 */
+	protected $_description;
+	
+	/**
+	 * @var string
+	 */
 	protected $_status = '200 OK';
+	/**
+	 * @var string
+	 */
 	protected $_contentType = 'text/html';
+	/**
+	 * @var string
+	 */
 	protected $_charset = 'utf-8';
+	/**
+	 * @var string
+	 */
 	protected $_language = 'en';
+	/**
+	 * @var string
+	 */
 	protected $_lastModified;
 	
+	/**
+	 * @param string $view
+	 */
 	function setView($view)
 	{
 		$this->_view = $view;
 	}
-	
+	/**
+	 * @return string
+	 */
 	function getView()
 	{
 		return (null === $this->_view) ? Naf::currentAction() : $this->_view;
 	}
 	
+	/**
+	 * @param string $title
+	 */
 	function setTitle($title)
 	{
 		$this->_title = $title;
 	}
-	
+	/**
+	 * @return string
+	 */
 	function getTitle()
 	{
 		return $this->_title;
 	}
 	
+	/**
+	 * @param array | string $keywords
+	 */
 	function addKeywords($keywords)
 	{
-		foreach ((array) $keywords as $word)
-		{
-			$this->_keywords[] = $word;
-		}
+		$this->_keywords = array_merge($this->_keywords, (array) $keywords);
 	}
-	
+	/**
+	 * @param bool $asString
+	 * @return array | string
+	 */
 	function getKeywords($asString = false)
 	{
 		if ($asString)
@@ -49,83 +104,140 @@ class Naf_Response {
 		return $this->_keywords;
 	}
 	
+	/**
+	 * @param string $description
+	 */
 	function setDescription($description)
 	{
 		$this->_description = $description;
 	}
-	
+	/**
+	 * @return string
+	 */
 	function getDescription()
 	{
 		return $this->_description;
 	}
 	
+	/**
+	 * @param string $contentType
+	 */
 	function setContentType($contentType)
 	{
 		$this->_contentType = $contentType;
 	}
-	
+	/**
+	 * @return string
+	 */
 	function getContentType()
 	{
 		return $this->_contentType;
 	}
 	
+	/**
+	 * @param string $language
+	 */
 	function setLanguage($language)
 	{
 		$this->_language = $language;
 	}
-	
+	/**
+	 * @return string
+	 */
 	function getLanguage()
 	{
 		return $this->_language;
 	}
 	
+	/**
+	 * @param string $status
+	 */
 	function setStatus($status)
 	{
 		$this->_status = $status;
 	}
-	
+	/**
+	 * Send status header
+	 */
 	function exposeStatus()
 	{
 		header("HTTP/1.0 " . $this->_status);
 	}
 	
+	/**
+	 * @param string $charset
+	 */
 	function setCharset($charset)
 	{
 		$this->_charset = $charset;
 	}
-	
+	/**
+	 * @return string
+	 */
 	function getCharset()
 	{
 		return $this->_charset;
 	}
 	
+	/**
+	 * @param string $datetime
+	 */
 	function setLastModified($datetime)
 	{
 		if (($time = strtotime($datetime)) > $this->_lastModified)
 			$this->_lastModified = $time;
 	}
 	
+	/**
+	 * Send Content-Type header
+	 */
 	function exposeContentType()
 	{
 		header("Content-Type: " . $this->_contentType . "; charset=" . $this->_charset);
 	}
 	
+	/**
+	 * Send Content-Language header
+	 */
 	function exposeLanguage()
 	{
 		header("Content-Language: " . $this->_language);
 	}
 	
+	/**
+	 * Send Last-Modified header
+	 */
 	function exposeLastModified()
 	{
 		if (null === $this->_lastModified) return;
 		header("Last-Modified: " . gmdate('D, d M Y H:i:s', $this->_lastModified) . " GMT");
 	}
 	
+	/**
+	 * Set response to AJAX-request
+	 *
+	 * @param array $errorList
+	 * @param mixed $data
+	 */
 	function setAjaxResponse($errorList, $data = null)
 	{
 		$this->_data['ajax'] = array(
 			'errorList' => (array) $errorList,
 			'data' => $data);
+	}
+	/**
+	 * @param array $errorList
+	 */
+	function setAjaxError($errorList)
+	{
+		$this->setAjaxResponse($errorList);
+	}
+	/**
+	 * @param mixed $data
+	 */
+	function setAjaxData($data)
+	{
+		$this->setAjaxResponse(null, $data);
 	}
 	
 	function __get($name)
