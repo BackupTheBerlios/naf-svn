@@ -389,6 +389,21 @@ final class Naf {
 	}
 	
 	/**
+	 * Assert request is done using POST method
+	 * @param callback $callback called on method mismatch, defaults to exit()
+	 */
+	static function assertPost($callback = null)
+	{
+		if ('POST' != $_SERVER['REQUEST_METHOD'])
+		{
+			if ($callback)
+				call_user_func($callback);
+			else
+				exit();
+		}
+	}
+	
+	/**
 	 * Register POST request handler.
 	 * Shortcut to
 	 * if (Naf::handlePostRequest($action, $trigger)
@@ -410,6 +425,14 @@ final class Naf {
 			if ($stop)
 				self::stop();
 		}
+	}
+	
+	/**
+	 * @return Naf_Url
+	 */
+	static function urlComposer()
+	{
+		return self::$_urlComposer;
 	}
 	
 	/**
