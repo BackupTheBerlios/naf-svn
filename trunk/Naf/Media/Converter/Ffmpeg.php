@@ -39,7 +39,7 @@ class Naf_Media_Converter_Ffmpeg extends Naf_Media_Converter {
 		}
 		
 		$bitrate = $this->outputInfo->getBitrate();
-		$c->addOptionIf($bitrate, '-b', (int) $bitrate);
+		$c->addOptionIf($bitrate, '-b', (int) $bitrate . "k");
 		
 		try {
 			$c->exec();
