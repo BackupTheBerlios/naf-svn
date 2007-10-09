@@ -61,6 +61,6 @@ class Naf_Validator_Result {
 	
 	function export()
 	{
-		return $this->_data;
+		return (array) $this->_data;
 	}
 }
