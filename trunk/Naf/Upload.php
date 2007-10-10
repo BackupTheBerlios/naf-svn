@@ -102,7 +102,7 @@ class Naf_Upload {
 		
 		$destination = rtrim($destFolder, '/ ') . '/' . $name;
 		if (! @move_uploaded_file($this->_tmpName, $destination))
-			throw new Naf_Upload_Exception('File upload failed!');
+			throw new Naf_Upload_Exception('File upload failed! Destination folder/file not writable?');
 		
 		return $destination;
 	}
@@ -137,6 +137,9 @@ class Naf_Upload {
 	{
 		switch ($this->_error)
 		{
+			case UPLOAD_ERR_NO_FILE:
+				throw new Naf_Upload_NoFileException();
+				break;
 			case UPLOAD_ERR_CANT_WRITE:
 				$message = 'Failed to write file to disk';
 				break;
@@ -148,9 +151,6 @@ class Naf_Upload {
 				break;
 			case UPLOAD_ERR_INI_SIZE:
 				$message = 'The uploaded file exceeds the upload_max_filesize directive (' . ini_get("upload_max_filesize") . ') in php.ini';
-				break;
-			case UPLOAD_ERR_NO_FILE:
-				$message = 'No file was uploaded';
 				break;
 			case UPLOAD_ERR_NO_TMP_DIR:
 				$message = 'Missing a temporary folder';
