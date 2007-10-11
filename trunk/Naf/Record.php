@@ -178,6 +178,14 @@ abstract class Naf_Record {
 		
 		return $this->_validator;
 	}
+	/**
+	 * Shortcut for $this->validator()->result()->getErrorList();
+	 *
+	 */
+	final function getErrorList()
+	{
+		return $this->validator()->result()->getErrorList();
+	}
 	
 	/**
 	 * Create validator for the row to be inserted/updated
