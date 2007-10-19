@@ -25,7 +25,7 @@ function __autoload($class) {
 		$root = Naf::$settings['autoload_map'][$libraryName];
 	else
 		$root = APP_LIB_ROOT;
-	
+
 	include_once $root . str_replace('_', '/', $class) . '.php';
 }
 
@@ -565,6 +565,10 @@ final class Naf {
 	{
 		if ($errno & error_reporting())
 		{
+			if (! class_exists('Naf_Exception_Php', false))
+			{
+				__autoload('Naf_Exception_Php');
+			}
 			throw new Naf_Exception_Php($errstr, $errno);
 		}
 		else
