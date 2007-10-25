@@ -131,7 +131,7 @@ class Naf_SimpleView {
 	{
 		if (array_key_exists($name, $this->_vars))
 			return $this->_vars[$name];
-		
+
 		throw new Naf_Exception('Variable ' . $name . ' could not be found');
 	}
 	
