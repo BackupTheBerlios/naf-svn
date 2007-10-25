@@ -33,6 +33,7 @@ class Naf_Validator {
 	protected $_messages = array();
 	protected $_required = array();
 	protected $_equals = array();
+	protected $_validated = array();
 	/**#@-*/
 	
 	/**
@@ -57,6 +58,7 @@ class Naf_Validator {
 	 */
 	function addRequired($key, $message)
 	{
+		$this->_validated[$key] = null;
 		$this->_required[$key] = $message;
 		return $this;
 	}
@@ -72,6 +74,8 @@ class Naf_Validator {
 	function addEquals($key1, $key2, $message)
 	{
 		$this->_equals[] = array($key1, $key2, $message);
+		$this->_validated[$key1] = null;
+		$this->_validated[$key2] = null;
 		return $this;
 	}
 	
@@ -85,6 +89,7 @@ class Naf_Validator {
 	 */
 	function addRule($key, $filter, $message)
 	{
+		$this->_validated[$key] = null;
 		foreach ($this->_rules as $index => $stack)
 			if (! array_key_exists($key, $stack))
 				return $this->_doAddRule($key, $filter, $message, $index);
@@ -222,6 +227,8 @@ class Naf_Validator {
 		array_walk_recursive($input, array($this, '_prepareInput'));
 
 		$this->_result->reset();
+		$this->_result->importRaw(array_intersect_key($input, $this->_validated));
+		
 		if ($this->_failRequired($input) || 
 			$this->_failEquals($input) || 
 			$this->_failRules($input))
