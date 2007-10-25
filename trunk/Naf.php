@@ -155,7 +155,6 @@ final class Naf {
 			self::$_action = self::resolveAction();
 		
 		self::perform(self::$_action);
-		self::render();
 		if (null !== self::$cache)
 			self::$cache->store();
 	}
@@ -191,8 +190,14 @@ final class Naf {
 			try
 			{
 				foreach (self::$controllersPath as $dir)
+				{
 					if (is_file($controllerFilename = $dir . $action . '.php'))
-						return include $controllerFilename;
+					{
+						include $controllerFilename;
+						self::render();
+						return ;
+					}
+				}
 				
 				if ($action == $lastAction)
 					die('Action ' . $action . ' not found. Additionally, the exception-handler action could not be found.');
