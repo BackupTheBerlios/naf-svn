@@ -49,9 +49,9 @@ class Naf_Select {
 		return $this->_table->_statement($sql, $binds);
 	}
 	
-	function count()
+	function count($column = "*")
 	{
-		$s = $this->_table->setSelection('COUNT(*)');
+		$s = $this->_table->setSelection('COUNT(' . $column . ')');
 		list($sql, $binds) = $this->_table->getSelectSql($this->_filters);
 		$this->_table->setSelection($s);
 		$this->_appendHaving($sql);
