@@ -56,23 +56,33 @@ class Naf_Validator_Result {
 	/**
 	 * Add an error message
 	 *
+	 * @param string $key
 	 * @param string $error
 	 * @return Naf_Validator_Result $this
 	 */
-	function addError($error)
+	function addError($key, $error)
 	{
-		$this->_errors[] = $error;
+		$this->_errors[$key] = $error;
 		return $this;
 	}
 	
 	/**
 	 * Export error-list
 	 *
+	 * @param bool $preserveKeys Whether to preserve keys in errors array. This parameter has been
+	 * 								introduced for backwards compatibility and is FALSE by default - 
+	 * 								so when you call this method without arguments, a numeric array will be returned,
+	 * 								and you must specify TRUE as arguments to retrieve a hash of errors.
 	 * @return array
 	 */
-	function getErrorList()
+	function getErrorList($preserveKeys = false)
 	{
-		return $this->_errors;
+		if ($preserveKeys)
+		{
+			return (array) $this->_errors;
+		} else {
+			return array_values((array) $this->_errors);
+		}
 	}
 	
 	/**
@@ -90,7 +100,7 @@ class Naf_Validator_Result {
 	 *
 	 * @return array
 	 */
-	function export()
+	function export($preserveKeys = false)
 	{
 		return (array) $this->_data;
 	}

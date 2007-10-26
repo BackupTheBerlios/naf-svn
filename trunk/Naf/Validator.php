@@ -251,7 +251,7 @@ class Naf_Validator {
 	{
 		foreach ($this->_required as $key => $message)
 			if (empty($input[$key]))
-				$this->_result->addError($message);
+				$this->_result->addError($key, $message);
 		
 		return ! $this->_result->ok();
 	}
@@ -260,7 +260,7 @@ class Naf_Validator {
 	{
 		foreach ($this->_equals as $spec)
 			if (@$input[$spec[0]] != @$input[$spec[1]])
-				$this->_result->addError($spec[2]);
+				$this->_result->addError($spec[1], $spec[2]);
 		
 		return ! $this->_result->ok();
 	}
@@ -285,7 +285,7 @@ class Naf_Validator {
 				}
 				elseif (false === $value)
 				{
-					$this->_result->addError($this->_messages[$index][$key]);
+					$this->_result->addError($key, $this->_messages[$index][$key]);
 				}
 			}
 			
