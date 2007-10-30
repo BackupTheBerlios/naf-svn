@@ -133,15 +133,28 @@ class Naf_Table {
 	/**
 	 * Calculate sum of values in column $column satisfying conditions in $where
 	 *
-	 * @param string $column
+	 * @param string | array $expressions Either a string (SQL expression to be wrapped in SUM() ) or 
+	 * 							an array (SQL expression => alias,..)
 	 * @param array | string $where
 	 * @return int
 	 */
-	function sum($column, $where = null)
+	function sum($expressions, $where = null)
 	{
-		$sql = 'SELECT SUM(' . $column . ') FROM ' . $this->_name;
-		$binds = $this->_appendWhere($sql, $where);
-		return $this->_statement($sql, $binds)->fetchColumn();
+		if (is_string($expressions))
+		{
+			$sql = 'SELECT SUM(' . $expressions . ') FROM ' . $this->_name;
+			$binds = $this->_appendWhere($sql, $where);
+			return $this->_statement($sql, $binds)->fetchColumn();
+		} else {
+			$sum = array();
+			foreach ($expressions as $expr => $alias)
+			{
+				$sum[] = "SUM($expr) AS $alias";
+			}
+			$sql = 'SELECT ' . implode(", ", $sum) . ' FROM ' . $this->_name;
+			$binds = $this->_appendWhere($sql, $where);
+			return $this->_statement($sql, $binds)->fetch();
+		}
 	}
 	
 	/**
@@ -283,7 +296,17 @@ class Naf_Table {
 		if (empty($order))
 			return ;
 		
-		$sql .= ' ORDER BY ' . implode(', ', (array) $order);
+		$normalized = array();
+		foreach ((array) $order as $key => $val)
+		{
+			if (is_numeric($key))
+			{
+				$normalized[] = $val;
+			} else {
+				$normalized[] = $key . ' ' . $val;
+			}
+		}
+		$sql .= ' ORDER BY ' . implode(', ', $normalized);
 	}
 	
 	function _appendLimit(&$sql, $pageSize, $pageNumber)

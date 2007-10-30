@@ -59,6 +59,17 @@ class Naf_Select {
 	}
 	
 	/**
+	 * Get [sub]totals for numeric columns
+	 *
+	 * @param string | array $expressions
+	 * @return string | array
+	 */
+	function sum($expressions)
+	{
+		return $this->_table->sum($expressions, $this->_filters);
+	}
+	
+	/**
 	 * @param string $groupBy
 	 * @return Naf_DbList $this
 	 */
@@ -84,6 +95,13 @@ class Naf_Select {
 	{
 		$this->_order = $order;
 		return $this;
+	}
+	/**
+	 * @return string | array
+	 */
+	final function getOrder()
+	{
+		return $this->_order;
 	}
 	/**
 	 * @param string $sql

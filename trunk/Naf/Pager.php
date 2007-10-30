@@ -74,7 +74,7 @@ class Naf_Pager implements Iterator {
 		$this->pageNumber = $pageNumber;
 		$this->pageSize = $pageSize;
 		
-		$this->queryParams = $_GET;
+		$this->queryParams = &$_GET;// we need to reference so that changes to $_GET affect us.
 	}
 	
 	/**
