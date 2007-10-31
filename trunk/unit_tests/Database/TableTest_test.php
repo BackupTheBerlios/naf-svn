@@ -6,24 +6,11 @@
 
 require_once dirname(__FILE__) . '/../setup.php';
 require_once dirname(__FILE__) . '/Connection.php';
+require_once dirname(__FILE__) . '/Abstract.php';
  
-class Naf_Db_TableTest extends UnitTestCase
+class Naf_Db_TableTest extends AbstractDbTest
 {
-	/**
-	 * @var PDO
-	 */
-	private $connection;
-	
 	const DUMMY_DATA_COUNT = 10;
-	
-	function __construct()
-	{
-		parent::__construct();
-		
-		$c = new Naf_UnitTestDbConnection();
-		$this->connection = $c->getConnection();
-		Naf_Table::setDefaultConnection($this->connection);
-	}
 	
 	function testCountAndInsert()
 	{
