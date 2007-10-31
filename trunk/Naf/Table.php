@@ -11,6 +11,16 @@ class Naf_Table {
 	/**#@-*/
 	
 	/**
+	 * @var PDO
+	 */
+	static protected $defaultConnection;
+	
+	/**
+	 * @var PDO
+	 */
+	protected $connection;
+	
+	/**
 	 * Constructor
 	 *
 	 * @param string $name Table name
@@ -19,7 +29,6 @@ class Naf_Table {
 	 */
 	function __construct($name, $pk = 'id', $sequence = null)
 	{
-		Naf::dbConnect();
 		$this->_name = $this->_from = $name;
 		$this->_pk = $pk;
 		
@@ -27,6 +36,28 @@ class Naf_Table {
 			$this->_sequence = $this->_name . '_' . $this->_pk . '_seq';
 		else
 			$this->_sequence = $sequence;
+	}
+
+	/**
+	 * @param PDO $connection
+	 */
+	static function setDefaultConnection(PDO $connection)
+	{
+		self::$defaultConnection = $connection;
+	}
+	/**
+	 * @return PDO
+	 */
+	function getConnection()
+	{
+		return $this->connection;
+	}
+	/**
+	 * @param PDO $connection
+	 */
+	function setConnection(PDO $connection)
+	{
+		$this->connection = $connection;
 	}
 	
 	/**
@@ -182,7 +213,7 @@ class Naf_Table {
 		$sql = 'INSERT INTO ' . $this->_name . ' (' . implode(', ', array_keys($row)) . 
 				') VALUES (?' . str_repeat(', ?', count($row) - 1) . ')';
 		$this->_statement($sql, array_values($row));
-		return (int) Naf::$pdo->lastInsertId($this->_sequence);
+		return (int) $this->connection->lastInsertId($this->_sequence);
 	}
 	
 	/**
@@ -256,7 +287,8 @@ class Naf_Table {
 	 */
 	function _statement($sql, array $binds)
 	{
-		$stmt = Naf::$pdo->prepare($sql);
+		$this->ensureConnection();
+		$stmt = $this->connection->prepare($sql);
 		$this->_prepareBooleans($binds);
 		$stmt->execute($binds);
 		$stmt->setFetchMode(PDO::FETCH_ASSOC);
@@ -328,5 +360,18 @@ class Naf_Table {
 		foreach ($row as $key => $value)
 			if (is_bool($value))
 				$row[$key] = $value ? 'true' : 'false';
+	}
+	
+	private function ensureConnection()
+	{
+		if ($this->connection) return ;
+		if (self::$defaultConnection)
+		{
+			$this->connection = self::$defaultConnection;
+			return ;
+		}
+		Naf::dbConnect();
+		self::setDefaultConnection(Naf::$pdo);
+		$this->connection = self::$defaultConnection;
 	}
 }
