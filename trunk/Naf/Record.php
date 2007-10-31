@@ -61,9 +61,7 @@ abstract class Naf_Record {
 	
 	function fetchEmpty()
 	{
-		$empty = $this->_defaults;
-		$empty[$this->_pk] = null;
-		return $empty;
+		return array_merge($this->_defaults, array($this->_pk => null));
 	}
 	
 	/**
