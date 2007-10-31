@@ -113,7 +113,7 @@ class Naf_Validator_Result {
 	 */
 	function importRaw(array $data)
 	{
-		$this->_raw = $rawData;
+		$this->_raw = $data;
 	}
 	
 	/**
