@@ -140,6 +140,6 @@ class Naf_Select {
 	final private function _appendHaving(&$sql)
 	{
 		if (null !== $this->_having)
-			$sql .= ' HAVING ((' . implode(') AND (', (array) $this->_having) . '))';
+			$sql .= ' HAVING (' . implode(') AND (', (array) $this->_having) . ')';
 	}
 }

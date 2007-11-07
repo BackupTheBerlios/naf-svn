@@ -117,6 +117,11 @@ class Naf_Pager implements Iterator {
 		return $this->pageSize;
 	}
 	
+	function getStart()
+	{
+		return (($this->pageNumber - 1) * $this->pageSize) + 1;
+	}
+	
 	/**
 	 * Generate URL
 	 *

@@ -40,9 +40,10 @@ class Naf_SimpleView {
 	/**
 	 * Render output
 	 *
-	 * @param string $name View name
+	 * @param string $name Template name
+	 * @param array $localVars associative array of variables in local scope for this template
 	 */
-	function render($name)
+	function render($name, $localVars = null)
 	{
 		$er = error_reporting();
 		error_reporting($er & ~E_NOTICE);
@@ -51,6 +52,10 @@ class Naf_SimpleView {
 		{
 			if (is_file($viewFilename = $dir . $name . '.tpl.php'))
 			{
+				if (is_array($localVars))
+				{
+					extract($localVars);
+				}
 				include $viewFilename;
 				return ;
 			}
