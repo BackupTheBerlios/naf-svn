@@ -66,6 +66,18 @@ class Naf_SimpleView {
 		throw new Naf_Exception_404();
 	}
 	
+	function fetch($name, $localVars = null)
+	{
+		ob_start();
+		try {
+			$this->render($name, $localVars);
+		} catch (Exception $e) {
+			ob_end_clean();
+			throw $e;
+		}
+		return ob_get_clean();
+	}
+	
 	function registerHelper($helper)
 	{
 		if (is_object($helper))
