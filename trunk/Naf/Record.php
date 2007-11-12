@@ -146,7 +146,7 @@ abstract class Naf_Record {
 	 */
 	function loadByFilter($filter, $order = null) {
 		$this->reset();
-		if ($row = $this->_table->findAll($filter, $order)->fetch())
+		if ($row = $this->_table->findAll($filter, $order, 1)->fetch())
 		{
 			$this->import($row);
 			return $row;
