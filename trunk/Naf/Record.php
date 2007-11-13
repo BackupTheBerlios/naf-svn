@@ -115,6 +115,33 @@ abstract class Naf_Record {
 	}
 	
 	/**
+	 * Factory method, creates Naf_Record instance of class $rec and loads $id.
+	 * throws Naf_Exception_404 in case $id could not be found
+	 *
+	 * @param string | object $rec either a class-name or a Naf_Record object
+	 * @param int $id
+	 * @param string $notFoundMsg a sprintf template
+	 * @return Naf_Record
+	 * @throws Naf_Exception_404
+	 */
+	static function create($rec, $id, $notFoundMsg = "Record %d not found")
+	{
+		if ($id)
+		{
+			if (! is_object($rec))
+			{
+				$rec = new $rec();
+			}
+			if ($rec->load($id))
+			{
+				return $rec;
+			}
+		}
+		
+		throw new Naf_Exception_404(get_class($rec) . ": " . sprintf($notFoundMsg, $id));
+	}
+	
+	/**
 	 * Loads data from a table row with id=$id
 	 *
 	 * @param int $id
