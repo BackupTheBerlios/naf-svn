@@ -38,6 +38,17 @@ class Naf_Select {
 	}
 	
 	/**
+	 * Set selection
+	 *
+	 * @param string | array $s
+	 * @return string old selection
+	 */
+	function setSelection($s)
+	{
+		return $this->_table->setSelection($s);
+	}
+	
+	/**
 	 * @return PDOStatement
 	 */
 	function export($pageNumber = null, $pageSize = null) {
