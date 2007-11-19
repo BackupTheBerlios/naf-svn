@@ -181,8 +181,9 @@ final class Naf {
 	 * Perform action $action
 	 *
 	 * @param string $action
+	 * @param bool $renderView Whether to render view immediately
 	 */
-	static function perform($action)
+	static function perform($action, $renderView = true)
 	{
 		$lastAction = null;
 		while (true)
@@ -194,7 +195,10 @@ final class Naf {
 					if (is_file($controllerFilename = $dir . $action . '.php'))
 					{
 						include $controllerFilename;
-						self::render();
+						if ($renderView)
+						{
+							self::render();
+						}
 						return ;
 					}
 				}
