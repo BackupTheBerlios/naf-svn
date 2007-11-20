@@ -36,6 +36,7 @@ class Naf_Registry {
 	 */
 	static function get($name)
 	{
+		die(__METHOD__);
 		if (self::exists($name))
 			return self::$storage[$name];
 		else
