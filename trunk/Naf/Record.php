@@ -123,7 +123,10 @@ abstract class Naf_Record {
 	
 	/**
 	 * Factory method, creates Naf_Record instance of class $rec and loads $id.
-	 * throws Naf_Exception_404 in case $id could not be found
+	 * throws Naf_Exception_404 in case $id could not be found.
+	 * 
+	 * This method supports Registry pattern, therefore, once created, 
+	 * the same record will be returned again again and again
 	 *
 	 * @param string | object $record either a class-name or a Naf_Record object
 	 * @param int $id
