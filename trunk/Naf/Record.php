@@ -43,6 +43,13 @@ abstract class Naf_Record {
 	protected $_setters = array();
 	
 	/**
+	 * Instance registry
+	 *
+	 * @var array
+	 */
+	private static $_registry = array();
+	
+	/**
 	 * Constructor
 	 */
 	function __construct()
@@ -118,27 +125,38 @@ abstract class Naf_Record {
 	 * Factory method, creates Naf_Record instance of class $rec and loads $id.
 	 * throws Naf_Exception_404 in case $id could not be found
 	 *
-	 * @param string | object $rec either a class-name or a Naf_Record object
+	 * @param string | object $record either a class-name or a Naf_Record object
 	 * @param int $id
 	 * @param string $notFoundMsg a sprintf template
 	 * @return Naf_Record
 	 * @throws Naf_Exception_404
 	 */
-	static function create($rec, $id, $notFoundMsg = "Record %d not found")
+	static function create($record, $id, $notFoundMsg = "Record %d not found")
 	{
-		if ($id)
+		if (is_object($record))
 		{
-			if (! is_object($rec))
-			{
-				$rec = new $rec();
-			}
-			if ($rec->load($id))
-			{
-				return $rec;
-			}
+			$class = get_class($record);
+		} else {
+			$class = $record;
 		}
 		
-		throw new Naf_Exception_404(get_class($rec) . ": " . sprintf($notFoundMsg, $id));
+		if (! array_key_exists($class, self::$_registry))
+		{
+			self::$_registry[$class] = array();
+		}
+		
+		if (array_key_exists($id, self::$_registry[$class]))
+		{
+			return self::$_registry[$class][$id];
+		}
+
+		$record = new $class();
+		if (! $record->load($id))
+		{
+			throw new Naf_Exception_404($class . ": " . sprintf($notFoundMsg, $id));
+		}
+		
+		return self::$_registry[$class][$id] = $record;
 	}
 	
 	/**
