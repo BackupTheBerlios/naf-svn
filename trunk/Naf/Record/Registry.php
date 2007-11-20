@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @deprecated Use of this class is deprecated. Use Naf_Record::create() instead.
+ *
+ */
+
 class Naf_Record_Registry {
 	
 	private static $_list = array();
@@ -9,8 +14,9 @@ class Naf_Record_Registry {
 	 *
 	 * @param int $id
 	 * @return Naf_Record
+	 * @throws Naf_Exception_404
 	 */
-	static function get($class, $id)
+	static function get($class, $id, $notFoundMsg = "Record %d not found")
 	{
 		if (! array_key_exists($class, self::$_list))
 			self::$_list[$class] = array();
@@ -20,12 +26,8 @@ class Naf_Record_Registry {
 		
 		$r = new $class();
 		if (! $r->load($id))
-			throw new Naf_Record_Registry_Exception('Cannot find ' . $class . ' #' . $id);
+			throw new Naf_Exception_404(get_class($rec) . ": " . sprintf($notFoundMsg, $id));
 		
 		return self::$_list[$class][$id] = $r;
 	}
-}
-
-class Naf_Record_Registry_Exception extends Exception {
-	
 }
