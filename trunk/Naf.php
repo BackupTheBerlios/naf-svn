@@ -577,6 +577,10 @@ final class Naf {
 			if (! class_exists('Naf_Exception_Php', false))
 			{
 				__autoload('Naf_Exception_Php');
+				if (! class_exists('Naf_Exception_Php', false))
+				{
+					die("$errstr in $errfile on line $errline");
+				}
 			}
 			throw new Naf_Exception_Php($errstr, $errno);
 		}
