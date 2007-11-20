@@ -582,7 +582,7 @@ final class Naf {
 					die("$errstr in $errfile on line $errline");
 				}
 			}
-			throw new Naf_Exception_Php($errstr, $errno);
+			throw new Naf_Exception_Php($errstr);
 		}
 		else
 		{
