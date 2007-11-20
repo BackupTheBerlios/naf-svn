@@ -161,7 +161,7 @@ class Naf_Response {
 	 */
 	function exposeStatus()
 	{
-		header("HTTP/1.0 " . $this->_status);
+		$this->header("HTTP/1.0 " . $this->_status);
 	}
 	
 	/**
@@ -193,7 +193,7 @@ class Naf_Response {
 	 */
 	function exposeContentType()
 	{
-		header("Content-Type: " . $this->_contentType . "; charset=" . $this->_charset);
+		$this->header("Content-Type: " . $this->_contentType . "; charset=" . $this->_charset);
 	}
 	
 	/**
@@ -201,7 +201,7 @@ class Naf_Response {
 	 */
 	function exposeLanguage()
 	{
-		header("Content-Language: " . $this->_language);
+		$this->header("Content-Language: " . $this->_language);
 	}
 	
 	/**
@@ -210,7 +210,7 @@ class Naf_Response {
 	function exposeLastModified()
 	{
 		if (null === $this->_lastModified) return;
-		header("Last-Modified: " . gmdate('D, d M Y H:i:s', $this->_lastModified) . " GMT");
+		$this->header("Last-Modified: " . gmdate('D, d M Y H:i:s', $this->_lastModified) . " GMT");
 	}
 	
 	/**
@@ -254,5 +254,13 @@ class Naf_Response {
 	function export()
 	{
 		return $this->_data;
+	}
+	
+	private function header($h)
+	{
+		if (! headers_sent())
+		{
+			header($h);
+		}
 	}
 }

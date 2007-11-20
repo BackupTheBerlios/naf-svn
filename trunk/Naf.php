@@ -572,7 +572,6 @@ final class Naf {
 	 */
 	static function phpErrorHandler($errno, $errstr, $errfile, $errline)
 	{
-		static $n = 0;
 		if ($errno & error_reporting())
 		{
 			if (! class_exists('Naf_Exception_Php', false))
@@ -582,8 +581,6 @@ final class Naf {
 			
 			if (class_exists('Naf_Exception_Php', false))
 			{
-				echo ++$n;
-				echo ": ".$errstr."<br>";
 				throw new Naf_Exception_Php($errstr);
 			}
 		}
