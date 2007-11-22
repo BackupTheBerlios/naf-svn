@@ -38,13 +38,25 @@ class Naf_Media_InfoReader_Ffmpeg
 			$i->setSamplingRate($matches[2]);
 			$i->setAudioBitrate($matches[3]);
 		}
-		
-		if (preg_match("~.+Video\:\s+(\S+)(?:[,/]\s+\S+)?,\s+(\d+)x(\d+)(?:,\s+\d+\s+kb/s)?(?:,\s+(\d+\.\d+)\s+fps\(r\))?~m", $infoText, $matches))
+
+		/*if (preg_match("~.+Video\:\s+(\S+)(?:[,/]\s+\S+)?,\s+(\d+)x(\d+)(?:,\s+\d+\s+kb/s)?(?:,\s+(\d+\.\d+)\s+fps\(r\))?~m", $infoText, $matches))
 		{
 			$i->setHasVideo(true);
 			$i->setVideoCodec($matches[1]);
 			$i->setPixelSize($matches[2], $matches[3]);
 			$i->setFps($matches[4]);
+		}*/
+		
+		if (preg_match("~\n([^\n]+Video\:\s+(\S+)[^\n]+)\n~m", $infoText, $matches)) {
+			$videoInfo = $matches[1];
+			$i->setHasVideo(true);
+			$i->setVideoCodec($matches[2]);
+			if (preg_match("~(\d+)x(\d+)~", $videoInfo, $matches)) {
+				$i->setPixelSize($matches[1], $matches[2]);
+			}
+			if (preg_match("~(\d+\.\d+)\s+fps\(r\)~", $videoInfo, $matches)) {
+				$i->setFps($matches[1]);
+			}
 		}
 		
 		return $i;
