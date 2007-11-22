@@ -59,6 +59,7 @@ class Naf_Media_InfoReader_Ffmpeg
 			}
 		}
 		
+		echo __METHOD__.":\n";
 		var_dump($i->getWidth());
 		var_dump($i->getHeight());
 		var_dump($i->getDurationString());
