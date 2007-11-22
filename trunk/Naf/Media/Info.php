@@ -106,8 +106,6 @@ class Naf_Media_Info {
 	{
 		$width = (int) $width;
 		$height = (int) $height;
-		if (($width % 16) || ($height % 16))
-			throw new Naf_Media_Exception("Illegal pixel size: must be divisible by 16");
 		
 		$this->width = $width;
 		$this->height = $height;
