@@ -51,7 +51,10 @@ class Naf_Media_InfoReader_Ffmpeg
 			$videoInfo = $matches[1];
 			$i->setHasVideo(true);
 			$i->setVideoCodec($matches[2]);
+			echo $videoInfo."\n";
 			if (preg_match("~([^0]\d+)x(\d+)~", $videoInfo, $matches)) {
+				var_dump($matches);
+				die();
 				$i->setPixelSize($matches[1], $matches[2]);
 			}
 			if (preg_match("~(\d+\.\d+)\s+fps\(r\)~", $videoInfo, $matches)) {
