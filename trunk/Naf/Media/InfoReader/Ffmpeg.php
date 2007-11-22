@@ -39,7 +39,7 @@ class Naf_Media_InfoReader_Ffmpeg
 			$i->setAudioBitrate($matches[3]);
 		}
 		
-		if (preg_match("~.+Video\:\s+([^\s]+)(?:\S\s+(?:[^\s]+))?,\s+(\d+)x(\d+)(?:,\s+\d+\s+kb/s)?,\s+(\d+\.\d+)\s+fps\(r\)~m", $infoText, $matches))
+		if (preg_match("~.+Video\:\s+(\S+)(?:[,/]\s+(?:[^\s]+))?,\s+(\d+)x(\d+)(?:,\s+\d+\s+kb/s)?(?:,\s+(\d+\.\d+)\s+fps\(r\))~m", $infoText, $matches))
 		{
 			$i->setHasVideo(true);
 			$i->setVideoCodec($matches[1]);
