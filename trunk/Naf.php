@@ -213,6 +213,10 @@ final class Naf {
 			}
 			catch (Naf_Exception_Stop $s)
 			{
+				if ($renderView)
+				{
+					self::render();
+				}
 				break;
 			}
 			catch (Naf_Exception_Forward $f)
