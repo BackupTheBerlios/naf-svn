@@ -47,6 +47,13 @@ class Naf_Pager implements Iterator {
 	private $separator = "&amp;";
 	
 	/**
+	 * Anchor
+	 *
+	 * @var string
+	 */
+	private $anchor;
+	
+	/**
 	 * for iterating through pages
 	 *
 	 * @var int
@@ -75,6 +82,16 @@ class Naf_Pager implements Iterator {
 		$this->pageSize = $pageSize;
 		
 		$this->queryParams = &$_GET;// we need to reference so that changes to $_GET affect us.
+	}
+	
+	function setAnchor($anchor)
+	{
+		$this->anchor = $anchor;
+	}
+	
+	function getAnchor()
+	{
+		return $this->anchor ? "#" . $this->anchor : '';
 	}
 	
 	/**
@@ -131,7 +148,7 @@ class Naf_Pager implements Iterator {
 	function url($page)
 	{
 		$this->queryParams['page'] = $page;
-		return Naf::currentUrl($this->queryParams, $this->separator);
+		return Naf::currentUrlXml($this->queryParams, $this->separator) . $this->getAnchor();
 	}
 	
 	/**
