@@ -26,6 +26,13 @@ class Naf_SimpleView {
 	 */
 	protected $_scriptPath;
 	
+	/**
+	 * Named buffers for wrap
+	 *
+	 * @var array
+	 */
+	protected $_buffers = array();
+	
 	function __construct(Naf_Response $response)
 	{
 		$this->_response = $response;
@@ -56,7 +63,36 @@ class Naf_SimpleView {
 				{
 					extract($localVars);
 				}
+				
+				$this->_buffers[] = array();
+				end($this->_buffers);
+				
 				include $viewFilename;
+				
+				$key = key($this->_buffers);
+				foreach ($this->_buffers[$key] as $template => $placeholders)
+				{
+					foreach ($placeholders as $name => $tokens)
+					{
+						for ($i = 0; $i < count($tokens); ++$i)
+						{
+							ob_end_flush();
+						}
+					}
+				}
+				foreach ($this->_buffers[$key] as $template => $placeholders)
+				{
+					$vars = array();
+					foreach ($placeholders as $name => $tokens)
+					{
+						$vars[$name] = implode("", $tokens);
+					}
+					$this->render($template, $vars);
+				}
+				
+				array_pop($this->_buffers);
+				end($this->_buffers);
+				
 				return ;
 			}
 		}
@@ -76,6 +112,28 @@ class Naf_SimpleView {
 			throw $e;
 		}
 		return ob_get_clean();
+	}
+	/**
+	 * Wrap the buffer into another template
+	 *
+	 * @param string $template
+	 * @param string $placeholder
+	 */
+	function wrap($template, $placeholder)
+	{
+		$key = key($this->_buffers);
+		if (! array_key_exists($template, $this->_buffers[$key]))
+		{
+			$this->_buffers[$key][$template] = array();
+		}
+		if (! array_key_exists($placeholder, $this->_buffers[$key][$template]))
+		{
+			$this->_buffers[$key][$template][$placeholder] = array();
+		}
+		$index = count($this->_buffers[$key][$template][$placeholder]);
+		$this->_buffers[$key][$template][$placeholder][$index] = '';
+		
+		ob_start(array(new Naf_SimpleView_Wrapper($this->_buffers[$key][$template][$placeholder][$index]), 'wrap'));
 	}
 	
 	function registerHelper($helper)
@@ -155,5 +213,17 @@ class Naf_SimpleView {
 	function __set($name, $value)
 	{
 		$this->_vars[$name] = $value;
+	}
+}
+
+class Naf_SimpleView_Wrapper {
+	private $buffer;
+	function __construct(& $buffer)
+	{
+		$this->buffer = & $buffer;
+	}
+	function wrap($buffer)
+	{
+		$this->buffer = $buffer;
 	}
 }
