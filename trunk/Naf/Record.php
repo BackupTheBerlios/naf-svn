@@ -107,7 +107,7 @@ abstract class Naf_Record {
 		if (! $this->_check()) return false;
 		
 		$rowData = array_intersect_key($this->_data, $this->_defaults);
-		if (null === ($this->_data[$this->_pk]))
+		if (! empty($this->_data[$this->_pk]))
 			return $this->_data[$this->_pk] = $this->_table->insert($rowData);
 		else
 			return $this->_table->update($rowData, $this->_data[$this->_pk]);
@@ -253,7 +253,7 @@ abstract class Naf_Record {
 	protected function _filterUnique($field, $value)
 	{
 		$where = array($field . ' = ?' => $value);
-		if (null !== $this->_data[$this->_pk])
+		if (! empty($this->_data[$this->_pk]))
 			$where[$this->_tableName . '.' . $this->_pk . ' != ?'] = $this->_data[$this->_pk];
 
 		if ($this->_table->count($where))
