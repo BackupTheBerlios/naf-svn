@@ -107,7 +107,7 @@ abstract class Naf_Record {
 		if (! $this->_check()) return false;
 		
 		$rowData = array_intersect_key($this->_data, $this->_defaults);
-		if (! empty($this->_data[$this->_pk]))
+		if (empty($this->_data[$this->_pk]))
 			return $this->_data[$this->_pk] = $this->_table->insert($rowData);
 		else
 			return $this->_table->update($rowData, $this->_data[$this->_pk]);
