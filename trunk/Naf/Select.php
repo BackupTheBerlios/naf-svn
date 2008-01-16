@@ -84,7 +84,7 @@ class Naf_Select {
 	 * @param string $groupBy
 	 * @return Naf_DbList $this
 	 */
-	final function setGroupBy($groupBy)
+	function setGroupBy($groupBy)
 	{
 		$this->_groupBy = $groupBy;
 		return $this;
@@ -93,7 +93,7 @@ class Naf_Select {
 	 * @param string $having
 	 * @return Naf_DbList $this
 	 */
-	final function setHaving($having)
+	function setHaving($having)
 	{
 		$this->_having = $having;
 		return $this;
@@ -102,7 +102,7 @@ class Naf_Select {
 	 * @param string $order
 	 * @return Naf_DbList $this
 	 */
-	final function setOrder($order)
+	function setOrder($order)
 	{
 		$this->_order = $order;
 		return $this;
