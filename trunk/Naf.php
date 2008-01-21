@@ -351,7 +351,7 @@ final class Naf {
 		}
 		
 		if ($action)
-			self::perform($action);
+			self::perform($action, false);
 		
 		return true;
 	}
