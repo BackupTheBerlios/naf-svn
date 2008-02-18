@@ -12,6 +12,8 @@ if (! defined('NAF_ROOT'))
 
 /**
  * enable autoload
+ * 
+ * @todo move __autoload() to a separate file.
  *
  * @param string $class
  */
