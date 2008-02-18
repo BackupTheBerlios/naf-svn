@@ -26,6 +26,8 @@ class Naf_SimpleView {
 	 */
 	protected $_scriptPath;
 	
+	protected $exception404Class = 'Naf_Exception_404';
+	
 	/**
 	 * Named buffers for wrap
 	 *
@@ -42,6 +44,11 @@ class Naf_SimpleView {
 	function setScriptPath($path)
 	{
 		$this->_scriptPath = (array) $path;
+	}
+	
+	function set404ExceptionClass($class)
+	{
+		$this->exception404Class = $class;
 	}
 	
 	/**
@@ -99,7 +106,7 @@ class Naf_SimpleView {
 		
 		error_reporting($er);
 		
-		throw new Naf_Exception_404();
+		throw new $this->exception404Class();
 	}
 	
 	function fetch($name, $localVars = null)
@@ -179,7 +186,7 @@ class Naf_SimpleView {
 	 * @return string
 	 */
 	function escape($value, $quoteStyle = ENT_QUOTES, $charset = null) {
-		if (null === $charset) $charset = Naf::$response->getCharset();
+//		if (null === $charset) $charset = Naf::$response->getCharset();
 		return htmlspecialchars($value, $quoteStyle, $charset);
 	}
 	
@@ -188,7 +195,7 @@ class Naf_SimpleView {
 		foreach ($this->_helperList as $className => $helper)
 		{
 			if (! is_object($helper))
-				$this->_helperList[$className] = $helper = new $className;
+				$this->_helperList[$className] = $helper = new $className($this);
 			
 			if (method_exists($helper, $method))
 				return call_user_func_array(array($helper, $method), $args);
