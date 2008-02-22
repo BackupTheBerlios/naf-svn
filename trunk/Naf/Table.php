@@ -19,6 +19,7 @@ class Naf_Table {
 	 * @var PDO
 	 */
 	protected $connection;
+
 	
 	/**
 	 * Constructor
@@ -41,7 +42,7 @@ class Naf_Table {
 	/**
 	 * @param PDO $connection
 	 */
-	static function setDefaultConnection(PDO $connection)
+	static function setDefaultConnection($connection)
 	{
 		self::$defaultConnection = $connection;
 	}
@@ -55,7 +56,7 @@ class Naf_Table {
 	/**
 	 * @param PDO $connection
 	 */
-	function setConnection(PDO $connection)
+	function setConnection($connection)
 	{
 		$this->connection = $connection;
 	}
