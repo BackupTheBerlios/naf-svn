@@ -52,12 +52,27 @@ class Naf_Select {
 	 * @return PDOStatement
 	 */
 	function export($pageNumber = null, $pageSize = null) {
+		list($sql, $binds) = $this->sql($pageNumber, $pageSize);
+		return $this->_table->_statement($sql, $binds);
+	}
+	
+	function sql($pageNumber = null, $pageSize = null, $inlineBoundVars = false)
+	{
 		list($sql, $binds) = $this->_table->getSelectSql($this->_filters);
 		$this->_appendGroupBy($sql);
 		$this->_appendHaving($sql);
 		$this->_table->_appendOrder($sql, $this->_order);
 		$this->_table->_appendLimit($sql, $pageSize, $pageNumber);
-		return $this->_table->_statement($sql, $binds);
+		if ($inlineBoundVars)
+		{
+			foreach ($binds as $b)
+			{
+				$sql = preg_replace("/\?/", $b, $sql, 1);
+			}
+			return $sql;
+		} else {
+			return array($sql, $binds);
+		}
 	}
 	
 	function count($column = "*")
