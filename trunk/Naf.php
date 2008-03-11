@@ -12,8 +12,6 @@ if (! defined('NAF_ROOT'))
 
 /**
  * enable autoload
- * 
- * @todo move __autoload() to a separate file.
  *
  * @param string $class
  */
@@ -215,10 +213,6 @@ final class Naf {
 			}
 			catch (Naf_Exception_Stop $s)
 			{
-				if ($renderView)
-				{
-					self::render();
-				}
 				break;
 			}
 			catch (Naf_Exception_Forward $f)
@@ -353,7 +347,7 @@ final class Naf {
 		}
 		
 		if ($action)
-			self::perform($action, false);
+			self::perform($action);
 		
 		return true;
 	}

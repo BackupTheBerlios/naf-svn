@@ -150,6 +150,16 @@ class Naf_Validator {
 	 * @param string $message
 	 * @return Naf_Validator
 	 */
+	function addUrlRule($key, $message)
+	{
+		return $this->addRule($key, FILTER_VALIDATE_URL, $message);
+	}
+	
+	/**
+	 * @param string $key
+	 * @param string $message
+	 * @return Naf_Validator
+	 */
 	function addIntegerRule($key, $message, $options = null)
 	{
 		return $this->addRule($key, array('filter' => FILTER_VALIDATE_INT, 'options' => $options), $message);

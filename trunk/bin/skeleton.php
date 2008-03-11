@@ -4,6 +4,10 @@ require_once dirname(__FILE__) . '/Cli.php';
 
 define('SKELETON_BASE', dirname(__FILE__) . '/skeleton/');
 
+function skeleton_print_usage() {
+	echo "Usage: php skeleton.php ";
+}
+
 function skeleton_mkfile($path, $contents = null) {
 	global $cli, $conditional;
 	

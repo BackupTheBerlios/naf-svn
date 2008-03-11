@@ -36,6 +36,23 @@ class Naf_Select {
 		$this->_table = new Naf_Table($from);
 		$this->_table->setSelection($selection);
 	}
+	/**
+	 * paginate result set.
+	 *
+	 * @todo after paginate() was called, $this->pageNumber & $this->pageSize must be set, 
+	 * 		so that they affect export() even if it called with other arguments.
+	 * 		??? - question rizes here regarding a behavior that'll be obviuos.
+	 * @param int $pageNumber
+	 * @param int $pageSize
+	 * @return Naf_Pager
+	 */
+	function paginate($pageNumber = Naf_Pager::AUTORESOLVE, $pageSize = null)
+	{
+		$p = new Naf_Pager($this->count(), $pageNumber, $pageSize);
+		$this->pageNumber = $p->getPageNumber();
+		$this->pageSize = $p->getPageSize();
+		return $p;
+	}
 	
 	/**
 	 * Set selection
@@ -67,7 +84,7 @@ class Naf_Select {
 		{
 			foreach ($binds as $b)
 			{
-				$sql = preg_replace("/\?/", $b, $sql, 1);
+				$sql = preg_replace("/\?/", "'$b'", $sql, 1);
 			}
 			return $sql;
 		} else {

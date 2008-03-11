@@ -29,6 +29,14 @@ class Naf_SimpleView {
 	protected $exception404Class = 'Naf_Exception_404';
 	
 	/**
+	 * Whether to profile rendering
+	 *
+	 * @var bool
+	 */
+	static private $profile = false;
+	static private $profileTemplate = '<div class="naf-simpleview-profile">%s rendered in %d ms</div>';
+	
+	/**
 	 * Named buffers for wrap
 	 *
 	 * @var array
@@ -49,6 +57,11 @@ class Naf_SimpleView {
 	function set404ExceptionClass($class)
 	{
 		$this->exception404Class = $class;
+	}
+	
+	static function setProfile($newValue)
+	{
+		self::$profile = (bool) $newValue;
 	}
 	
 	/**
@@ -74,7 +87,17 @@ class Naf_SimpleView {
 				$this->_buffers[] = array();
 				end($this->_buffers);
 				
+				if (self::$profile)
+				{
+					$profileTimerStart = microtime(true);
+				}
+				
 				include $viewFilename;
+				
+				if (self::$profile)
+				{
+					printf(self::$profileTemplate, $name, round((microtime(true) - $profileTimerStart) * 1000));
+				}
 				
 				$key = key($this->_buffers);
 				foreach ($this->_buffers[$key] as $template => $placeholders)
