@@ -29,12 +29,12 @@ class Naf_SimpleView {
 	protected $exception404Class = 'Naf_Exception_404';
 	
 	/**
-	 * Whether to profile rendering
+	 * Whether print a footnote below the template, with time elapsed for the render.
 	 *
 	 * @var bool
 	 */
-	static private $profile = false;
-	static private $profileTemplate = '<div class="naf-simpleview-profile">%s rendered in %d ms</div>';
+	static private $profile = false, 
+		$profileFormat = '<pre class="naf-simple-view-profile">%s rendered in %d ms</pre>';
 	
 	/**
 	 * Named buffers for wrap
@@ -49,6 +49,11 @@ class Naf_SimpleView {
 		$this->_vars = ($this->_response->export());
 	}
 	
+	static function setProfile($newValue)
+	{
+		self::$profile = (bool) $newValue;
+	}
+	
 	function setScriptPath($path)
 	{
 		$this->_scriptPath = (array) $path;
@@ -59,11 +64,6 @@ class Naf_SimpleView {
 		$this->exception404Class = $class;
 	}
 	
-	static function setProfile($newValue)
-	{
-		self::$profile = (bool) $newValue;
-	}
-	
 	/**
 	 * Render output
 	 *
@@ -72,6 +72,10 @@ class Naf_SimpleView {
 	 */
 	function render($name, $localVars = null)
 	{
+		if (self::$profile)
+		{
+			$start = microtime(true);
+		}
 		$er = error_reporting();
 		error_reporting($er & ~E_NOTICE);
 		
@@ -96,7 +100,7 @@ class Naf_SimpleView {
 				
 				if (self::$profile)
 				{
-					printf(self::$profileTemplate, $name, round((microtime(true) - $profileTimerStart) * 1000));
+					printf(self::$profileFormat, $name, round((microtime(true) - $start) * 1000));
 				}
 				
 				$key = key($this->_buffers);
@@ -122,7 +126,7 @@ class Naf_SimpleView {
 				
 				array_pop($this->_buffers);
 				end($this->_buffers);
-				
+
 				return ;
 			}
 		}
