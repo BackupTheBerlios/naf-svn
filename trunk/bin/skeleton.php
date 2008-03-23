@@ -39,6 +39,7 @@ function skeleton_mkfile($path, $contents = null) {
 	
 	if (! file_put_contents($d . '/' . basename($path), $contents))
 	{
+		print "Output file " . $d . '/' . basename($path) . " not created\n";
 		exit(1);
 	}
 	
@@ -116,14 +117,14 @@ $cli->include_common_config = $cli->create_common_config ?
 
 foreach (new DirectoryIterator(SKELETON_BASE) as $file)
 {
-	if ($file->isDot()) continue;
+	if ("." == substr($file, 0, 1)) continue;
 	
 	if ($file->isDir())
 	{
 		
 		foreach (new DirectoryIterator(SKELETON_BASE . $file->__toString()) as $sub)
 		{
-			if ($sub->isDot()) continue;
+			if ("." == substr($sub, 0, 1)) continue;
 			
 			skeleton_mkfile($file->__toString() . '/' . $sub);
 		}

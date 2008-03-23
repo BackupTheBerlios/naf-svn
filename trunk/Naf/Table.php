@@ -116,7 +116,7 @@ class Naf_Table {
 	function findInIdList(array $idList, $where = null, $order = null)
 	{
 		if (! ($count = count($idList)))
-			return new ArrayObject(array());
+			return new PDOStatement();
 		
 		$sql = $this->_name . '.' . $this->_pk . ' IN (?' . str_repeat(', ?', $count - 1) . ')';
 		$where = array_merge((array) $where, array($sql => $idList));
