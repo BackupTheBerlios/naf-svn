@@ -26,7 +26,7 @@ class Naf_SimpleView {
 	 */
 	protected $_scriptPath;
 	
-	protected $exception404Class = 'Naf_Exception_404';
+	protected $exception404Class = 'Naf_SimpleView_404';
 	
 	/**
 	 * Whether print a footnote below the template, with time elapsed for the render.
