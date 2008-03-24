@@ -145,7 +145,7 @@ class LNaf {
 		
 		if (is_file($filename = rtrim($root, "/") . "/" . str_replace('_', '/', $class) . '.php'))
 		{
-			include_once $root . str_replace('_', '/', $class) . '.php';
+			include_once $filename;
 			return true;
 		} else {
 			return false;
@@ -192,7 +192,7 @@ class LNaf {
 		set_exception_handler(array(__CLASS__, 'exceptionHandler'));
 		if (isset($_SERVER['SCRIPT_NAME']))
 		{
-			$response->setView(substr($_SERVER['SCRIPT_NAME'], 0, strrpos($_SERVER['SCRIPT_NAME'], '.')));
+			self::response()->setView(substr($_SERVER['SCRIPT_NAME'], 0, strrpos($_SERVER['SCRIPT_NAME'], '.')));
 		}
 	}
 	
@@ -206,10 +206,10 @@ class LNaf {
 			return self::$pdo;
 		} else {
 			// @todo lazy connection w/help of Naf_Proxy
-			self::$pdo = new PDO(array(
+			self::$pdo = new PDO(
 				self::$settings['database']['dsn'],
 				self::$settings['database']['username'],
-				self::$settings['database']['password'])
+				self::$settings['database']['password']
 			);
 			self::$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			if ('mysql' == self::$pdo->getAttribute(PDO::ATTR_DRIVER_NAME))
@@ -250,7 +250,7 @@ class LNaf {
 			if (array_key_exists($trigger, $_POST))
 			{
 				$handler = new $submissionHandlerClass();
-				$handler->method();
+				$handler->$trigger($_POST);
 				LNaf::response()->setView($view);
 				LNaf::render();
 				exit();
@@ -278,6 +278,7 @@ class LNaf {
 	static function forceAjaxResponse()
 	{
 		self::response()->ajaxResponseForced = true;
+		self::response()->setAjaxData(null);
 	}
 	
 	static function setViewScriptPath($path)
@@ -306,7 +307,7 @@ class LNaf {
 	 */
 	static function createView()
 	{
-		$view = new Naf_SimpleView($response);
+		$view = new Naf_SimpleView(self::response());
 		$view->setScriptPath(self::$viewScriptPath);
 		return $view;
 	}
