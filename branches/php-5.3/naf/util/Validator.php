@@ -26,6 +26,8 @@
 
 namespace naf::util;
 
+use naf::util::Validator::Result;
+
 class Validator {
 	
 	/**#@+
@@ -48,7 +50,7 @@ class Validator {
 	 */
 	function __construct()
 	{
-		$this->_result = new Validator_Result();
+		$this->_result = new Result();
 	}
 	
 	/**
