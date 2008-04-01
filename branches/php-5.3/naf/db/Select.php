@@ -63,9 +63,9 @@ class Select {
 	
 	function setFetchMode($mode, $opts = null)
 	{
-		$this->fetchMode = (null === $opts) ?
+		$this->fetchMode = (1 == func_num_args()) ?
 			$mode :
-			array($mode, $opts);
+			func_get_args();
 		return $this;
 	}
 	
