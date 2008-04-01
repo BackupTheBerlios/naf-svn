@@ -99,8 +99,8 @@ class ActiveRecordTest extends NafUnit {
 		if (null === $this->pdo)
 		{
 			$this->pdo = new PDO("mysql:host=localhost;dbname=test", "root");
-			naf::db::ActiveRecord::setConnection($this->pdo);
-			naf::db::Select::setDefaultConnection($this->pdo);
+			ActiveRecord::setConnection($this->pdo);
+			ActiveRecord::setFetchModeClass();
 		}
 		$this->pdo->query("DROP TABLE activerecordtest");
 		$this->pdo->query("CREATE TABLE activerecordtest (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, 
