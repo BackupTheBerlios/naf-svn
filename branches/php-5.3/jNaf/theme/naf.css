@@ -1,0 +1,159 @@
+/* Naf.Widget.TitlePane */
+div.naf_title_pane_header {
+	border:1px solid silver;
+	padding:.5em;
+	cursor:pointer;
+	background-color:#eee;
+}
+div.naf_title_pane_content {
+	border:1px solid silver;
+	border-style:none solid solid;
+	padding:.5em;
+}
+
+/* Naf.Widget.Calendar */
+button.naf_calendar {
+	height:1.5em;
+	width:1.5em;
+	margin-left:.2em;
+	border-style:none;
+	background-color:transparent;
+	background:transparent url("naf/calendar.png") top left no-repeat;
+}
+
+/* Naf.Widget.TabSwitch */
+div.naf_tabswitch_container div.naf_tabswitch_tab_pane {
+	border:1px solid silver;
+	padding:.5em;
+	clear:both;
+}
+div.naf_tabswitch_container ul.horizontal li {
+	border-style:solid solid none none;
+	border-width:1px;
+	border-color:silver;
+	background-color:#eee;
+	padding:.2em 1em;
+	cursor:pointer;
+}
+div.naf_tabswitch_container ul.horizontal li.first-child {
+	border-left:1px solid silver;
+}
+div.naf_tabswitch_container ul.horizontal li.naf_tabswitch_tab_active {
+	background-color:white;
+}
+
+/* loading... */
+div.loading {
+	background:transparent url("naf/loading.gif") top left no-repeat;
+	width:32px;
+	height:32px;
+}
+
+/* error-list */
+ul#displayErrorList {
+	color:red;
+	border-left:.3em solid darkorange;
+	margin:1em 0;
+	padding:0 0 0 2em;
+}
+
+.invalid {
+	background-color:pink;
+}
+
+/* Horizontal <ul>, used for menus */
+ul.horizontal {
+	margin:0;
+	padding:0;
+	list-style:none;
+}
+ul.horizontal li {
+	float:left;
+	margin:0;
+	padding:0;
+}
+ul.horizontal li a, ul.horizontal li span {
+	display:block;
+	padding:.2em 1em;
+}
+
+/* ASCII-captcha */
+pre.captcha {
+	padding:.5em;
+	border:1px solid silver;
+	color: #000000;
+	background-color: #FFFFFF;
+	font-size: 6px;
+	font-family: "Courier New", Courier, mono;
+	line-height: 7px;
+}
+
+/* Forms */
+form.naf {
+	padding:0;
+	margin:0;
+	clear:both;
+}
+
+/* Hide from IE5-mac. Only IE-win sees this. \*/
+ 
+//form.naf {
+//	height: 1%;
+//}
+ 
+/* End hide from IE5/mac */
+
+form.naf label, form.naf .label {
+	display:block;
+	clear:left;
+	float:left;
+	width:25%;
+	min-width:25em;
+	margin-bottom:.3em;
+	margin-right:1em;
+	text-align:right;
+	white-space:nowrap;
+}
+form.naf label.right {
+	clear:none;
+	text-align:left;
+}
+form.naf .required {
+	float:left;
+	color:darkred;
+}
+form.naf .inline {
+	width:auto;
+	clear:none;
+	float:left;
+}
+form.naf br {
+	clear:both;
+}
+form.naf .clear {
+	clear:both;
+	width:auto;
+}
+form.naf input, form.naf select {
+	display:block;
+	float:left;
+	margin-bottom:.3em;
+}
+form.naf input.text {
+	width:30%;
+}
+form.naf input.submit {
+	display:block;
+	float:left;
+}
+form.naf .container {
+	display:block;
+	float:left;
+	margin-bottom:.3em;
+}
+.br {
+	line-height:1px;
+	font-size:1px;
+	display:block;
+	clear:both;
+}
