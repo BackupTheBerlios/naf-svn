@@ -65,6 +65,13 @@ class LNaf {
 		}
 	}
 	/**
+	 * @return array
+	 */
+	static function exportConfig()
+	{
+		return self::$settings;
+	}
+	/**
 	 * @param string $key
 	 * @param mixed $value
 	 */
