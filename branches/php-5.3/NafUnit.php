@@ -64,6 +64,12 @@ class NafUnit {
 			$this->ok = 'all';
 		}
 		
+		if (PHP_SAPI != 'cli')
+		{
+			$background = $this->failed ? 'red' : 'darkgreen';
+			print "<div style='background:" . $background . "'>&nbsp;</div><pre>";
+		}
+		
 		print $this->failed ? "FAILED!" : "OK";
 		print " - " . get_class($this);
 		print PHP_EOL;
@@ -77,7 +83,13 @@ class NafUnit {
 		}
 		print PHP_EOL;
 		print implode(PHP_EOL, $this->messages);
-		print PHP_EOL;
+		
+		if (PHP_SAPI == 'cli')
+		{
+			print PHP_EOL;
+		} else {
+			print "</pre>";
+		}
 		
 	}
 	
