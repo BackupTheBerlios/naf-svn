@@ -1,7 +1,12 @@
 <?php
 
 /**
- * LNaf is a "light" version of Naf.
+ * Naf is "Not A Framework"
+ * 
+ * 
+ * @copyright Victor Bolshov <crocodile2u@gmail.com>
+ * 
+ * version $Id$
  */
 
 class Naf {
