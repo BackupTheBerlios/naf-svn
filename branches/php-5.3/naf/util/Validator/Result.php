@@ -4,9 +4,9 @@
  * Encapsulates validation result
  */
 
-namespace naf::util;
+namespace naf::util::Validator;
 
-class Validator_Result {
+class Result {
 	
 	/**
 	 * Collected errors
