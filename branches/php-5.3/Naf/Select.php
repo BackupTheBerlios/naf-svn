@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Naf_Select is Naf implementation of QueryObject.
+ * naf::db::Select is Naf implementation of QueryObject.
  * 
  * I used to say that there will be no QueryObject in Naf... However, 
  * the concept proved to be quite good - and therefore I have chosen not to
@@ -10,7 +10,9 @@
  *
  */
 
-class Naf_Select {
+namespace naf::db;
+
+class Select {
 	/**
 	 * @var Naf_Table
 	 */
