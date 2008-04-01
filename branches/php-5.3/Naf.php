@@ -9,6 +9,8 @@
  * version $Id$
  */
 
+define('NAF_ROOT', dirname(__FILE__));
+
 spl_autoload_register(array('Naf', 'autoload'));
 
 class Naf {
@@ -16,7 +18,9 @@ class Naf {
 	/**
 	 * @var array
 	 */
-	static private $settings = array();
+	static private $settings = array(
+		'autoload_map' => array('naf' => NAF_ROOT)
+	);
 	
 	/**
 	 * @var Naf_Response
@@ -155,7 +159,7 @@ class Naf {
 		{
 			$root = self::$settings['autoload_map'][$libraryName];
 		} else {
-			$root = ROOT . 'lib';
+			$root = NAF_ROOT;
 		}
 		
 		if (is_file($filename = rtrim($root, "/") . "/" . str_replace('_', '/', $class) . '.php'))
