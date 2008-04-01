@@ -1,8 +1,17 @@
 <?php
 
+/**
+ * Validator chain - a chain-of-responsibilities pattern implementation.
+ * 
+ * $Id$
+ * 
+ * @package naf::util
+ * @subpackage Validator
+ */
+
 namespace naf::util;
 
-class naf::util::Validator_Chain {
+class Validator_Chain {
 	/**
 	 * @var SplObjectStorage
 	 */
