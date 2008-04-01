@@ -2,6 +2,11 @@
 
 /**
  * Encapsulates validation result
+ * 
+ * $Id$
+ * 
+ * @package naf::util
+ * @subpackage Validator
  */
 
 namespace naf::util::Validator;
