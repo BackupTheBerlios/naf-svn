@@ -148,6 +148,7 @@ abstract class Naf_Record {
 			self::$_registry[$class] = array();
 		}
 		
+		settype($id, 'integer');
 		if (array_key_exists($id, self::$_registry[$class]))
 		{
 			return self::$_registry[$class][$id];
