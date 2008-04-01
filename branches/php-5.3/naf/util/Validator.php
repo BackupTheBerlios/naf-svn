@@ -22,6 +22,9 @@
  *	var_dump($vResult->ok());
  *	var_dump($vResult->export());
  *	var_dump($vResult->getErrorList());
+ * 
+ * @package naf::util
+ * @subpackage Validator
  */
 
 namespace naf::util;
