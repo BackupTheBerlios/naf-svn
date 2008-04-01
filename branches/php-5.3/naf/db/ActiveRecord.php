@@ -43,6 +43,10 @@ class ActiveRecord {
 	 */
 	protected $setters = array();
 	
+	/**@+
+	 * Control over result set fetching.
+	 * @return void
+	 */
 	static function setFetchModeAssoc()
 	{
 		static::$fetchMode = array(PDO::FETCH_ASSOC);
@@ -55,6 +59,7 @@ class ActiveRecord {
 	{
 		static::$fetchMode = array(PDO::FETCH_INTO, new get_called_class());
 	}
+	/**-@*/
 	/**
 	 * Insert a new row
 	 *
@@ -115,22 +120,28 @@ class ActiveRecord {
 		return (bool) static::statement('DELETE FROM ' . (static::$table) . ' WHERE ' . (static::$pk) . ' = ?', $id)->rowCount();
 	}
 	/**
-	 * @return Record
+	 * @param int $id
+	 * @param string $cols
+	 * @param int | array $fetchMode - per-call fetching mode overriding static::$fetchMode value
+	 * @return Record | array depending on $fetchMode and static::$fetchMode values
 	 */
-	static function find($id, $cols = "*")
+	static function find($id, $cols = "*", $fetchMode = null)
 	{
 		$sql = "SELECT $cols FROM " . (static::$table) . " WHERE id = ?";
-		$s = static::statement($sql, $id);
+		$s = static::statement($sql, $id, $fetchMode);
 		return $s->fetch();
 	}
 	
 	/**
-	 * @return Select
+	 * @param array $where conditions for the WHERE SQL clause
+	 * @param string $cols
+	 * @param int | array $fetchMode - per-call fetching mode overriding static::$fetchMode value
+	 * @return naf::db::Select
 	 */
-	static function findAll($where = null, $cols = "*")
+	static function findAll($where = null, $cols = "*", $fetchMode = null)
 	{
 		$s = new Select(static::$table, $cols);
-		static::setupFetchMode($s);
+		static::setupFetchMode($s, $fetchMode);
 		return $s->addFilters($where)->setConnection(static::$connection);
 	}
 	/**
@@ -386,16 +397,25 @@ class ActiveRecord {
 	/**
 	 * @return PDOStatement
 	 */
-	static protected function statement($sql, $data)
+	static protected function statement($sql, $data, $fetchMode = null)
 	{
 		$s = static::$connection->prepare($sql);
 		$s->execute((array) $data);
-		static::setupFetchMode($s);
+		static::setupFetchMode($s, $fetchMode);
 		return $s;
 	}
-	
-	static protected function setupFetchMode($s)
+	/**
+	 * @param object $s must implement setFetchMode!
+	 * @param $fetchMode override statically bound value when needed
+	 */
+	static protected function setupFetchMode($s, $fetchMode = null)
 	{
+		if (null === $fetchMode)
+		{
+			$fetchMode = static::$fetchMode;
+		} else {
+			$fetchMode = (array) $fetchMode;
+		}
 		call_user_func_array(array($s, 'setFetchMode'), static::$fetchMode);
 	}
 	
