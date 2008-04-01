@@ -19,7 +19,11 @@ class NafUnit {
 					
 					$failedBefore = $this->failedAsserts;
 					
+					$this->setUp();
+					
 					$this->$m();
+					
+					$this->tearDown();
 					
 					if ($this->failedAsserts > $failedBefore)
 					{
