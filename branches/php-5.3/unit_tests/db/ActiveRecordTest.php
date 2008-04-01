@@ -57,7 +57,6 @@ class ActiveRecordTest extends NafUnit {
 		$this->assert($s->count() == 0, "Test::findAll(NON_EXISTING_ROW) failed (incorrect count $sc)");
 		$sf = $s->export()->fetch(PDO::FETCH_ASSOC);
 		$this->assert($sf == false, "Test::findAll(NON_EXISTING_ROW) failed (incorrect row " . var_export($sf, 1) . ")");
-		$this->assert(false, "test failure");
 	}
 	
 	function testRowMethods()
