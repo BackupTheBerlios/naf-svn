@@ -2,6 +2,8 @@
 
 namespace naf::db;
 
+use naf::util;
+
 class ActiveRecord {
 	/**
 	 * @var PDO
@@ -18,7 +20,7 @@ class ActiveRecord {
 	
 	protected $data = array();
 	/**
-	 * @var Naf_Validator
+	 * @var naf::util::Validator
 	 */
 	protected $validator;
 	
@@ -317,11 +319,11 @@ class ActiveRecord {
 	/**
 	 * Create validator for the row to be inserted/updated
 	 *
-	 * @return Nafvalidator
+	 * @return naf::util::Validator
 	 */
 	protected function _createValidator()
 	{
-		return new Naf_Validator();
+		return new util::Validator();
 	}
 	
 	/**
