@@ -28,6 +28,8 @@ class ActiveRecord {
 	
 	static protected $registry = array();
 	
+	static protected $fetchMode = array(PDO::FETCH_ASSOC);
+	
 	protected $data = array();
 	/**
 	 * @var naf::util::Validator
@@ -41,6 +43,18 @@ class ActiveRecord {
 	 */
 	protected $setters = array();
 	
+	static function setFetchModeAssoc()
+	{
+		static::$fetchMode = array(PDO::FETCH_ASSOC);
+	}
+	static function setFetchModeClass()
+	{
+		static::$fetchMode = array(PDO::FETCH_CLASS, get_called_class());
+	}
+	static function setFetchModeInto()
+	{
+		static::$fetchMode = array(PDO::FETCH_INTO, new get_called_class());
+	}
 	/**
 	 * Insert a new row
 	 *
@@ -107,7 +121,6 @@ class ActiveRecord {
 	{
 		$sql = "SELECT $cols FROM " . (static::$table) . " WHERE id = ?";
 		$s = static::statement($sql, $id);
-		$s->setFetchMode(PDO::FETCH_CLASS, get_called_class());
 		return $s->fetch();
 	}
 	
@@ -117,9 +130,8 @@ class ActiveRecord {
 	static function findAll($where = null, $cols = "*")
 	{
 		$s = new Select(static::$table, $cols);
-		return $s->addFilters($where)
-			->setConnection(static::$connection)
-			->setFetchMode(PDO::FETCH_CLASS, get_called_class());
+		static::setupFetchMode($s);
+		return $s->addFilters($where)->setConnection(static::$connection);
 	}
 	/**
 	 * @return int
@@ -378,7 +390,13 @@ class ActiveRecord {
 	{
 		$s = static::$connection->prepare($sql);
 		$s->execute((array) $data);
+		static::setupFetchMode($s);
 		return $s;
+	}
+	
+	static protected function setupFetchMode($s)
+	{
+		call_user_func_array(array($s, 'setFetchMode'), static::$fetchMode);
 	}
 	
 	static private function getSequence()
