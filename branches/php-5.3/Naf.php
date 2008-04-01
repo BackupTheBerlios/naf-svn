@@ -9,6 +9,8 @@
  * version $Id$
  */
 
+spl_autoload_register(array('Naf', 'autoload'));
+
 class Naf {
 	
 	/**
@@ -141,6 +143,7 @@ class Naf {
 	 */
 	static function autoload($class)
 	{
+		$class = str_replace('::', '_', $class);
 		if (false === ($p = strpos($class, '_')))
 		{
 			$libraryName = $class;
