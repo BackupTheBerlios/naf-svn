@@ -1,8 +1,18 @@
 <?php
 
+/**
+ * ActiveRecord class 
+ * 
+ * $Id$
+ * 
+ * A VERY simple implementation of ActiveRecord design pattern.
+ * Any domain logic is intended to be implemented in child-classes.
+ * However, validation facility is provided by naf::util::Validator.
+ */
+
 namespace naf::db;
 
-use naf::util;
+use naf::util::Validator;
 
 class ActiveRecord {
 	/**
@@ -323,7 +333,7 @@ class ActiveRecord {
 	 */
 	protected function _createValidator()
 	{
-		return new util::Validator();
+		return new Validator();
 	}
 	
 	/**
