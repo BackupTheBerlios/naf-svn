@@ -1,11 +1,31 @@
 <?php
 
+/**
+ * This is a simple unit-testing framework.
+ *
+ * $Id$
+ */
+
 class NafUnit {
+	
 	private $total, $totalAsserts, $ok, $okAsserts, $failed, $failedAsserts, $messages;
+	
+	private $filename;
+	
+	final function __construct()
+	{
+		$r = new ReflectionClass($this);
+		$this->filename = $r->getFileName();
+	}
+	
 	function setUp()
 	{}
+	
 	function tearDown()
 	{}
+	/**
+	 * runs the testcase
+	 */
 	final function run()
 	{
 		$this->total = $this->ok = $this->failed = $this->totalAsserts = $this->okAsserts = $this->failedAsserts = 0;
@@ -19,7 +39,11 @@ class NafUnit {
 					
 					$failedBefore = $this->failedAsserts;
 					
+					$this->setUp();
+					
 					$this->$m();
+					
+					$this->tearDown();
 					
 					if ($this->failedAsserts > $failedBefore)
 					{
@@ -35,13 +59,40 @@ class NafUnit {
 			}
 		}
 		
+		if (! $this->failed)
+		{
+			$this->ok = 'all';
+		}
+		
+		if (PHP_SAPI != 'cli')
+		{
+			$background = $this->failed ? 'red' : 'darkgreen';
+			print "<div style='background:" . $background . "'>&nbsp;</div><pre>";
+		}
+		
 		print $this->failed ? "FAILED!" : "OK";
+		print " - " . get_class($this);
 		print PHP_EOL;
-		print $this->total . " test methods, {$this->ok} ok, {$this->failed} failed, {$this->okAsserts} correct assertions, {$this->failedAsserts} failed";
+		print $this->total . " test methods, {$this->ok} ok";
+		if ($this->failed) {
+			print ", {$this->failed} failed";
+		}
+		print ", {$this->okAsserts} correct assertions";
+		if ($this->failed) {
+			print ", {$this->failed}, {$this->failedAsserts} failed";
+		}
 		print PHP_EOL;
 		print implode(PHP_EOL, $this->messages);
 		
+		if (PHP_SAPI == 'cli')
+		{
+			print PHP_EOL;
+		} else {
+			print "</pre>";
+		}
+		
 	}
+	
 	final function assert($expr, $message = null)
 	{
 		if ($expr)
@@ -49,28 +100,31 @@ class NafUnit {
 			$this->okAsserts++;
 		} else {
 			$this->failedAsserts++;
-			$this->messages = $this->message($message ? $message : "Assertion failed");
+			if (! $message) $message = "Assertion failed";
+			$this->messages[] = $this->message($message);
 		}
 	}
-	protected function message($trace, $preamble = "Failure")
+	
+	final protected function message($preamble = "Failure")
 	{
 		foreach (debug_backtrace() as $entry)
 		{
-			if ($this->isTestMethod(@$entry['method']))
+			if (($entry['file'] == $this->filename))
 			{
 				break;
 			}
 		}
-		if (empty($entry['class'])) $entry['class'] = 'Unknown';
-		if (empty($entry['method'])) $entry['method'] = 'Unknown';
+		if (empty($entry['function'])) $entry['function'] = 'Unknown';
 		if (empty($entry['file'])) $entry['file'] = 'Unknown';
 		if (empty($entry['line'])) $entry['line'] = 'Unknown';
-		return "$preamble; {$entry['class']}::{$entry['method']}, {$entry['file']} ({$entry['line']})";
+		return "$preamble; {$entry['function']}, {$entry['file']} ({$entry['line']})";
 	}
+	
 	final private function isTestMethod($m)
 	{
 		return 0 === strpos($m, 'test');
 	}
+	
 	final function fail($message)
 	{
 		$this->failedAsserts++;
