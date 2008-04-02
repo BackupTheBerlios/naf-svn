@@ -265,7 +265,7 @@ class Naf_Table {
 	function delete($id)
 	{
 		$sql = 'DELETE FROM ' . $this->_name . ' WHERE ' . $this->_pk . ' = ?';
-		return $this->_statement($sql, array($id))->rowCount();
+		return $this->_statement($sql, array((int) $id))->rowCount();
 	}
 	
 	/**
