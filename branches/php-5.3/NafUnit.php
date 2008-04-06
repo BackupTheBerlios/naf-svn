@@ -105,6 +105,35 @@ class NafUnit {
 		}
 	}
 	
+	final function assertEqual($arg1, $arg2, $message = "Equal assertion fails")
+	{
+		$message .= ' as ' . var_export($arg1, 1) . ' !=' . var_export($arg2, 1);
+		$this->assert($arg1 == $arg2, $message);
+	}
+	
+	final function assertIdentical($arg1, $arg2, $message = "Identical assertion fails")
+	{
+		$message .= ' as ' . var_export($arg1, 1) . ' !==' . var_export($arg2, 1);
+		$this->assert($arg1 === $arg2, $message);
+	}
+	
+	final function assertNull($arg, $message = "NULL assertion fails")
+	{
+		$message .= ' as ' . var_export($arg, 1) . ' is not NULL';
+		$this->assert($arg === null, $message);
+	}
+	
+	final function assertNotNull($arg, $message = "NOT NULL assertion fails")
+	{
+		$this->assert($arg !== null, $message);
+	}
+	
+	final function assertIsA($arg, $class, $message = "\"Is-a\" assertion fails")
+	{
+		$message .= ' as ' . var_export($arg, 1) . ' is not an instance of '. $class;
+		$this->assert($arg instanceof $class, $message);
+	}
+	
 	final protected function message($preamble = "Failure")
 	{
 		foreach (debug_backtrace() as $entry)
