@@ -1,6 +1,8 @@
 <?php
 
-final class Naf_PhpIni {
+namespace naf::util;
+
+final class PhpIni {
 	static function postMaxSize()
 	{
 		return self::byteSize('post_max_size');
