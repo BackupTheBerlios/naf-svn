@@ -52,7 +52,9 @@
  * 
  */
 
-class Naf_Captcha {
+namespace naf::misc;
+
+class ASCIICaptcha {
 
 	private $font, $text, $secret;
 	
