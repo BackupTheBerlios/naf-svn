@@ -1,6 +1,8 @@
 <?php
 
-class Naf_Math {
+namespace naf::math;
+
+class Math {
 	
 	/**
 	 * Greatest Common Denominator
