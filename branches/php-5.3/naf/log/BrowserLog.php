@@ -1,6 +1,16 @@
 <?php
 
-class Naf_ErrorLog_Browser implements Naf_ErrorLog_Interface
+/**
+ * Browser-logger. Display exception info in a (quite convinient) browser interface
+ * 
+ * $Id$
+ * 
+ * @package naf::log
+ */
+
+namespace naf::log;
+
+class BrowserLog
 {
 	/**
 	 * Displays exception information

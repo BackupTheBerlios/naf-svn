@@ -1,6 +1,16 @@
 <?php
 
-class Naf_ErrorLog_Text implements Naf_ErrorLog_Interface
+/**
+ * Null-logger
+ * 
+ * $Id$
+ * 
+ * @package naf::log
+ */
+
+namespace naf::log;
+
+class TextLog
 {
 	/**
 	 * Displays exception information
