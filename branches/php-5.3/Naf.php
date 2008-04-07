@@ -28,20 +28,6 @@ class Naf {
 	static private $response;
 	
 	/**
-	 * Path to view templates
-	 *
-	 * @var string
-	 */
-	static private $viewScriptPath;
-	
-	/**
-	 * Path to POST request handlers
-	 *
-	 * @var string
-	 */
-	static private $postHandlerPath;
-	
-	/**
 	 * @var PDO
 	 */
 	static private $pdo;
@@ -298,37 +284,6 @@ class Naf {
 	{
 		self::response()->ajaxResponseForced = true;
 		self::response()->setAjaxData(null);
-	}
-	
-	static function setViewScriptPath($path)
-	{
-		self::$viewScriptPath = rtrim($path, ' /') . '/';
-	}
-	
-	static function setPostHandlerPath($path)
-	{
-		self::$postHandlerPath = rtrim($path, ' /') . '/';
-	}
-	
-	/**
-	 * render view
-	 */
-	static function render()
-	{
-		$response = self::response();
-		$response->exposeStatus();
-		$response->exposeContentType();
-		self::createView()->render($response->getView());
-	}
-	
-	/**
-	 * @return Naf_SimpleView
-	 */
-	static function createView()
-	{
-		$view = new Naf_SimpleView(self::response());
-		$view->setScriptPath(self::$viewScriptPath);
-		return $view;
 	}
 	
 }
