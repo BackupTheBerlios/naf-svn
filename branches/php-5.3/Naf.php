@@ -250,15 +250,18 @@ class Naf {
 			return false;
 		}
 		
-		foreach ($map as $trigger => $submissionHandlerClass)
+		foreach ($map as $trigger => $handler)
 		{
 			if (array_key_exists($trigger, $_POST))
 			{
-				$handler = new $submissionHandlerClass();
+				if (is_string($handler))
+				{
+					$handler = new $handler();
+				}
+				
 				$handler->$trigger($_POST);
 				LNaf::response()->setView($view);
-				LNaf::render();
-				exit();
+				return true;
 			}
 		}
 		
