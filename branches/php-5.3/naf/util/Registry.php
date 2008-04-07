@@ -4,7 +4,10 @@
  * An implementation of Registry pattern.
  */
 
-class Naf_Registry {
+namespace naf::util;
+use naf::util::Registry::Fault;
+
+class Registry {
 	/**
 	 * @var array
 	 */
@@ -17,7 +20,7 @@ class Naf_Registry {
 	static function put($name, $object)
 	{
 		if (self::exists($name))
-			throw new Naf_Registry_Exception("Object $name already registered");
+			throw new Fault("Object $name already registered");
 		else
 			self::$storage[$name] = $object;
 	}
@@ -39,6 +42,6 @@ class Naf_Registry {
 		if (self::exists($name))
 			return self::$storage[$name];
 		else
-			throw new Naf_Registry_Exception("Object $name not found in registry");
+			throw new Fault("Object $name not found in registry");
 	}
 }
