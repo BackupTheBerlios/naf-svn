@@ -1,6 +1,18 @@
 <?php
 
-class Naf_Timer {
+/**
+ * Simple timer.
+ * 
+ * $Id$
+ * 
+ * @package naf.util
+ * @subpackage Timer
+ * @copyright Victor Bolshov <crocodile2u@gmail.com>
+ */
+
+namespace naf::util;
+
+class Timer {
 	/**
 	 * @var float
 	 */
