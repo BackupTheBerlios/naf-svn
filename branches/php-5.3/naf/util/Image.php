@@ -4,7 +4,10 @@
  * Image manipulator
  */
 
-class Naf_Image {
+namespace naf::util;
+use naf::util::Image::Fault;
+
+class Image {
 	
 	/**#@+
 	 * Image handle
@@ -53,7 +56,7 @@ class Naf_Image {
 				$this->_source = imageCreateFromPng($filename);
 				break;
 			default:
-				throw new Naf_Image_Exception('Unsupported file extension');
+				throw new Fault('Unsupported file extension');
 				break;
 		}
 	}
@@ -64,7 +67,7 @@ class Naf_Image {
 	 * @param int $width
 	 * @param int $height
 	 * @return bool Alwayse TRUE
-	 * @throws Naf_Image_Exception
+	 * @throws Fault
 	 */
 	function inscribe($width, $height)
 	{
@@ -132,7 +135,7 @@ class Naf_Image {
 				$dstX, $dstY, $srcX, $srcY, 
 				$dstWidth, $dstHeight, $srcWidth, $srcHeight))
 		{
-			throw new Naf_Image_Exception('Failed to resize image');
+			throw new Fault('Failed to resize image');
 		}
 		
 		$this->_updateSize($dstWidth, $dstHeight);
@@ -151,7 +154,7 @@ class Naf_Image {
 	 *
 	 * @param string $filename
 	 * @return bool Alwayse TRUE
-	 * @throws Naf_Image_Exception
+	 * @throws Fault
 	 */
 	function save($filename = null)
 	{
@@ -174,12 +177,12 @@ class Naf_Image {
 				$callback = 'imagegif';
 				break;
 			default:
-				throw new Naf_Image_Exception('Unsupported image type ' . $ext);
+				throw new Fault('Unsupported image type ' . $ext);
 				break;
 		}
 		
 		if (! call_user_func_array($callback, array($this->_destination, $filename)))
-			throw new Naf_Image_Exception('Failed to save image');
+			throw new Fault('Failed to save image');
 		
 		imagedestroy($this->_destination);
 		
@@ -200,11 +203,7 @@ class Naf_Image {
 	protected function _checkDestinationImage()
 	{
 		if (! is_resource($this->_destination))
-			throw new Naf_Image_Exception('Destination image is not yet created!');
+			throw new Fault('Destination image is not yet created!');
 	}
-	
-}
-
-class Naf_Image_Exception extends Exception {
 	
 }
