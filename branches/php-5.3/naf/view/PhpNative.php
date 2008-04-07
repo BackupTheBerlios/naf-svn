@@ -1,6 +1,18 @@
 <?php
 
-class Naf_SimpleView {
+/**
+ * a simple (the simpliest possible?) template engine, utilizing PHP's ability to
+ * server as a template engine itself.
+ * 
+ * $Id$
+ * 
+ * @package naf::view
+ * @copyright Victor Bolshov <crocodile2u@gmail.com>
+ */
+
+namespace naf::view;
+
+class PhpNative {
 	
 	/**
 	 * @var Naf_Response
@@ -25,8 +37,6 @@ class Naf_SimpleView {
 	 * @var string
 	 */
 	protected $_scriptPath;
-	
-	protected $exception404Class = 'Naf_SimpleView_404';
 	
 	/**
 	 * Whether print a footnote below the template, with time elapsed for the render.
@@ -57,11 +67,6 @@ class Naf_SimpleView {
 	function setScriptPath($path)
 	{
 		$this->_scriptPath = (array) $path;
-	}
-	
-	function set404ExceptionClass($class)
-	{
-		$this->exception404Class = $class;
 	}
 	
 	/**
@@ -167,7 +172,7 @@ class Naf_SimpleView {
 		$index = count($this->_buffers[$key][$template][$placeholder]);
 		$this->_buffers[$key][$template][$placeholder][$index] = '';
 		
-		ob_start(array(new Naf_SimpleView_Wrapper($this->_buffers[$key][$template][$placeholder][$index]), 'wrap'));
+		ob_start(array(new PhpNative_Wrapper($this->_buffers[$key][$template][$placeholder][$index]), 'wrap'));
 	}
 	
 	function registerHelper($helper)
@@ -240,8 +245,6 @@ class Naf_SimpleView {
 	{
 		if (array_key_exists($name, $this->_vars))
 			return $this->_vars[$name];
-
-		throw new Naf_Exception('Variable ' . $name . ' could not be found');
 	}
 	
 	function __set($name, $value)
@@ -250,7 +253,7 @@ class Naf_SimpleView {
 	}
 }
 
-class Naf_SimpleView_Wrapper {
+class PhpNative_Wrapper {
 	private $buffer;
 	function __construct(& $buffer)
 	{
