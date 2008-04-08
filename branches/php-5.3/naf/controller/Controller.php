@@ -15,7 +15,7 @@ abstract class Controller {
 	/**
 	 * @var array
 	 */
-	protected $postRequestHandlers;
+	protected $postRequestHandlers = array();
 	
 	/**
 	 * @var Naf_Response
@@ -28,7 +28,7 @@ abstract class Controller {
 	 */
 	final function __construct()
 	{
-		$this->response = Naf::response();
+		$this->response = ::Naf::response();
 		$this->setUp();
 		
 		$class = get_class($this);
@@ -71,5 +71,23 @@ abstract class Controller {
 	/**
 	 * render view
 	 */
-	abstract function render();
+	function render($view){}
+	
+	/**
+	 * Render naf-style AJAX response (output some data back to the client).
+	 */
+	final function renderAjax($data, $forceAjaxResponse = false)
+	{
+		$v = new naf::view::Ajax($data, $forceAjaxResponse);
+		$v->render();
+	}
+	
+	/**
+	 * Render naf-style AJAX response (error).
+	 */
+	final function renderAjaxError($errorList, $forceAjaxResponse = false)
+	{
+		$v = new naf::view::AjaxError($errorList, $forceAjaxResponse);
+		$v->render();
+	}
 }
