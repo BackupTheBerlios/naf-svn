@@ -9,7 +9,10 @@
  * version $Id$
  */
 
-define('NAF_ROOT', dirname(__FILE__));
+if (! defined('NAF_ROOT'))
+{
+	define('NAF_ROOT', dirname(__FILE__));
+}
 
 spl_autoload_register(array('Naf', 'autoload'));
 
@@ -189,7 +192,7 @@ class Naf {
 	}
 
 	/**
-	 * Setup LNaf application
+	 * Setup Naf application
 	 */
 	static function setup()
 	{
@@ -279,7 +282,7 @@ class Naf {
 		{
 			return self::$response;
 		} else {
-			return self::$response = new Naf_Response();
+			return self::$response = new naf::core::Response();
 		}
 	}
 	
