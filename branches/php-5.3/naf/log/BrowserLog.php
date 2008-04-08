@@ -10,15 +10,15 @@
 
 namespace naf::log;
 
-class BrowserLog
+class BrowserLog extends AbstractLog 
 {
 	/**
 	 * Displays exception information
 	 */
-	function write(Exception $e)
+	function run()
 	{
-		echo '<h2>' . get_class($e) . ':</h2>';
-		echo '<h1>' . $e->getMessage() . '</h1>';
+		echo '<h2>' . get_class($this->exception) . ':</h2>';
+		echo '<h1>' . $this->exception->getMessage() . '</h1>';
 		echo <<<SCRIPT
 <script>
 function exception_browser_toogle(id) {
@@ -34,7 +34,7 @@ function exception_browser_toogle(id) {
 SCRIPT;
 		echo '<ol>';
 		
-		foreach ($e->getTrace() as $num => $trace)
+		foreach ($this->exception->getTrace() as $num => $trace)
 		{
 			$text  = empty($trace['file']) ? 'Unknown file' : $trace['file'];
 			$text .= ', ';

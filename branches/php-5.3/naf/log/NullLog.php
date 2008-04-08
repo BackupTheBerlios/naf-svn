@@ -10,9 +10,9 @@
 
 namespace naf::log;
 
-class NullLog
+class NullLog extends AbstractLog 
 {
-	function write(Exception $e)
+	function run()
 	{
 		// do nothing
 	}
