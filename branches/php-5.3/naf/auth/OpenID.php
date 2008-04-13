@@ -14,8 +14,10 @@ class OpenID {
 	 */
 	private $providers = array(
 		'http://www.blogger.com/openid-server.g' => array(
+			'id'          => 'google',
 			'description' => 'Google/Blogger',
-			'format'      => 'http://{username}.blogspot.com/'
+			'format'      => 'http://{username}.blogspot.com/',
+			'regexp'      => '~^http://([a-z0-9\-]+)\.blogspot\.com/$~i',
 		),
 	);
 	
@@ -23,6 +25,11 @@ class OpenID {
 	 * @var string
 	 */
 	private $baseUrl, $returnUrl, $trustUrl;
+	
+	function getKnownProviders()
+	{
+		return $this->providers;
+	}
 	
 	/**
 	 * @param string $url
@@ -53,7 +60,7 @@ class OpenID {
 	 */
 	function setTrustUrl($url)
 	{
-		$this->trustUrl = $this->checkUrl($url);
+		$this->trustUrl = $this->checkUrl($url, 'Invalid trust URL');
 	}
 	/**
 	 * @return string
@@ -76,7 +83,7 @@ class OpenID {
 	 */
 	function setReturnUrl($url)
 	{
-		$this->returnUrl = $this->checkUrl($url);
+		$this->returnUrl = $this->checkUrl($url, 'Invalid return URL');
 	}
 	/**
 	 * perform a redirect to OpenID/setup, where the openid server takes control over
@@ -153,69 +160,119 @@ class OpenID {
 			throw new Fault("openid_sig not set");
 		}
 		
+		$identity = filter_input(INPUT_GET, 'openid_identity', FILTER_VALIDATE_URL);
+		
+		$provider = $this->getProvider($identity);
+		
+		$providerInfo = parse_url($provider);
+		
 		$params = array(
 			'openid.mode' => 'check_authentication',
 			'openid.signed' => $signed,
 			'openid.assoc_handle' => $assoc,
 			'openid.sig' => $sig,
 			'openid.return_to' => filter_input(INPUT_GET, 'openid_return_to', FILTER_VALIDATE_URL),
-			'openid.identity' => filter_input(INPUT_GET, 'openid_identity', FILTER_VALIDATE_URL),
+			'openid.identity' => $identity,
 		);
 		
 		$postData = http_build_query($params);
 		
-		if (! $fp = fsockopen('www.blogger.com', 80, $errrno, $errstr, 5))
+		if (! $fp = fsockopen($providerInfo['host'], 80, $errrno, $errstr, 5))
 		{
 			throw new Fault("Could not connect to openid server. Network problems?");
 		}
 
-		$header = "POST /openid-server.g HTTP/1.0\r\n" .
-			"Host: www.blogger.com\r\n" . 
+		$target = $providerInfo['path'] . (@$providerInfo['query'] ? "?".$providerInfo['query'] : "");
+		$header = "POST {$target} HTTP/1.0\r\n" .
+			"Host: {$providerInfo['host']}\r\n" . 
 			"Content-type: application/x-www-form-urlencoded\r\n" .
 			"Content-length: " . strlen($postData) .
 			"Connection: Close\r\n";
 		
 		fwrite($fp, $header . "\r\n" . $postData);
+		list($responseHeaders, $responseBody) = $this->getResponse($fp);
 		
-		$responseHeaders = '';
-		$inHeaders = true;
-		$responseBody = '';
-		while (! feof($fp))
+		return ('is_valid:true' == trim($responseBody)) ? 
+			array('server' => $provider, 'identity' => $identity) : 
+			false;
+	}
+	
+	function getProviderById($id)
+	{
+		foreach ($this->providers as $server => $spec)
 		{
-			$str = fgets($fp, 128);
-			if ($inHeaders && ("\r\n" == $str))
-			{
-				$inHeaders = false;
-			}
-			elseif ($inHeaders)
-			{
-				$responseHeaders .= $str;
-			}
-			else
-			{
-				$responseBody .= $str;
+			if ($id == $spec['id']) {
+				return $server;
 			}
 		}
-		fclose($fp);
-
-		if (preg_match("~HTTP/1\.[01]\s(\d+)\s(.+)~i", $responseHeaders, $matches))
+	}
+	
+	function username($identity)
+	{
+		foreach ($this->providers as $server => $spec)
 		{
-			$statusCode = $matches[1];
-			$statusString = $matches[2];
-		}
-		else
-		{
-			$statusCode = '404';
-			$statusString = 'Not Found';
+			if (preg_match($spec['regexp'], $identity, $matches)) {
+				return $matches[1];
+			}
 		}
 		
-		if (200 != $statusCode)
+		return $identity;
+	}
+	
+	/**
+	 * Get OpenID service provider, being given an identity
+	 *
+	 * @param string $identity
+	 * @return string
+	 * @throws naf::auth::OpenID::Fault
+	 */
+	function getProvider($identity)
+	{
+		$this->checkUrl($identity);
+		
+		foreach ($this->providers as $server => $spec)
 		{
-			throw new Fault('HTTP request failed with status ' . $statusCode);
+			if (preg_match($spec['regexp'], $identity)) {
+				return $server;
+			}
 		}
 		
-		return 'is_valid:true' == trim($responseBody);
+		$info = parse_url($identity);
 		
+		if (! $fp = fsockopen($info['host'], 80, $errrno, $errstr, 5))
+		{
+			throw new Fault("Could not connect to openid identity. Network problems?");
+		}
+		
+		$pathAndQuery = $info['path'];
+		if (! empty($info['query']))
+		{
+			$pathAndQuery .= "?" . $info['query'];
+		}
+		
+		$header = "GET {$pathAndQuery} HTTP/1.0\r\n" .
+			"Host: {$info['host']}\r\n" . 
+			"Connection: Close\r\n";
+		
+		fwrite($fp, $header . "\r\n");
+		
+		$re = '~\<link +rel=["\']openid.server["\'] +href=["\']([^"\']+)["\'] ?/\>~i';
+		list($responseHeaders, $htmlLinkElement) = $this->getResponse($fp, $re);
+		
+		$server = '';
+		
+		if ($htmlLinkElement)
+		{
+			preg_match($htmlLinkElement, $re, $matches);
+			$server = filter_var($matches[1], FILTER_VALIDATE_URL);
+		}
+		
+		if (! $server)
+		{
+			throw new Fault("Unable to resolve OpenID server for this identity");
+		}
+		
+		return $server;
 	}
 	
 	/*
@@ -238,6 +295,58 @@ class OpenID {
 		{
 			throw new Fault("Base URL not set");
 		}
+	}
+	
+	private function getResponse($fp, $expectLinePattern = null)
+	{
+		$responseHeaders = '';
+		$inHeaders = true;
+		$responseBody = '';
+		while (! feof($fp))
+		{
+			$str = fgets($fp, 128);
+			if ($inHeaders && ("\r\n" == $str))
+			{
+				$inHeaders = false;
+			}
+			elseif ($inHeaders)
+			{
+				$responseHeaders .= $str;
+			}
+			else
+			{
+				if ($expectLinePattern)
+				{
+					$str = trim($str);
+					if (preg_match($expectLinePattern, $str))
+					{
+						$responseBody = $str;
+						break;
+					}
+				} else {
+					$responseBody .= $str;
+				}
+			}
+		}
+		fclose($fp);
+		
+		if (preg_match("~HTTP/1\.[01]\s(\d+)\s(.+)~i", $responseHeaders, $matches))
+		{
+			$statusCode = $matches[1];
+			$statusString = $matches[2];
+		}
+		else
+		{
+			$statusCode = '404';
+			$statusString = 'Not Found';
+		}
+		
+		if (200 != $statusCode)
+		{
+			throw new Fault('HTTP request failed with status ' . $statusCode);
+		}
+		
+		return array($responseHeaders, $responseBody);
 	}
 	
 }
