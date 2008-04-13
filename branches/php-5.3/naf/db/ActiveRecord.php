@@ -350,6 +350,26 @@ class ActiveRecord {
 		return $this->validator()->result()->getErrorList();
 	}
 	
+	function nullSetter($value)
+	{
+		if (empty($value))
+		{
+			return null;
+		} else {
+			return $value;
+		}
+	}
+	
+	function zeroSetter($value)
+	{
+		if (empty($value))
+		{
+			return 0;
+		} else {
+			return $value;
+		}
+	}
+	
 	/**
 	 * Create validator for the row to be inserted/updated
 	 *
