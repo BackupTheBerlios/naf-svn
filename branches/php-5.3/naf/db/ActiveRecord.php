@@ -141,8 +141,9 @@ class ActiveRecord {
 	static function findAll($where = null, $cols = "*", $fetchMode = null)
 	{
 		$s = new Select(static::$table, $cols);
-		static::setupFetchMode($s, $fetchMode);
-		return $s->addFilters($where)->setConnection(static::$connection);
+		return $s->addFilters($where)
+			->setConnection(static::$connection)
+			->setFetchMode($fetchMode ? $fetchMode : static::$fetchMode);
 	}
 	/**
 	 * @return int
