@@ -10,6 +10,7 @@
  */
 
 namespace naf::controller;
+use ::Naf;
 
 abstract class Controller {
 	/**
