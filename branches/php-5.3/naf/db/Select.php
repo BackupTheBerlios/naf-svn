@@ -17,7 +17,7 @@ class Select {
 	 * @var PDO
 	 */
 	private $connection;
-	protected $fetchMode = PDO::FETCH_ASSOC;
+	protected $fetchMode = array(PDO::FETCH_ASSOC);
 	/**
 	 * FROM clause spec
 	 *
@@ -63,7 +63,7 @@ class Select {
 	
 	function setFetchMode($mode, $opts = null)
 	{
-		$this->fetchMode = (1 == func_num_args()) ?
+		$this->fetchMode = is_array($mode) ?
 			$mode :
 			func_get_args();
 		return $this;
@@ -254,7 +254,7 @@ class Select {
 			self::$defaultConnection;
 		$s = $c->prepare($sql);
 		$s->execute($data);
-		call_user_func_array(array($s, 'setFetchMode'), (array) $this->fetchMode);
+		call_user_func_array(array($s, 'setFetchMode'), $this->fetchMode);
 		return $s;
 	}
 }
