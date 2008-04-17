@@ -8,7 +8,7 @@
 
 namespace naf::db;
 
-class Select implements IteratorAggregate {
+class Select implements IteratorAggregate, Countable {
 	/**
 	 * @var PDO
 	 */
