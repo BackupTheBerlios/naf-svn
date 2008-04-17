@@ -13,6 +13,7 @@
 namespace naf::db;
 
 use naf::util::Validator;
+use naf::err::NotFoundError;
 
 class ActiveRecord {
 	/**
@@ -180,7 +181,10 @@ class ActiveRecord {
 		{
 			if (is_scalar($arg))
 			{
-				$this->load($arg);
+				if (! $this->load($arg))
+				{
+					throw new NotFoundError();
+				}
 			} else {
 				$this->import($arg);
 			}
@@ -212,7 +216,7 @@ class ActiveRecord {
 		{
 			unset($data[static::$pk]);
 		}
-		
+
 		foreach ($data as $key => $value)
 		{
 			$this->__set($key, $value);
@@ -263,8 +267,8 @@ class ActiveRecord {
 	function load($id)
 	{
 		$this->reset();
-		if ($found = static::find($id))
-			return $this->data = $found->export();
+		if ($found = static::find($id, "*", PDO::FETCH_ASSOC))
+			return $this->data = $found;
 		else
 			return false;
 	}
