@@ -8,7 +8,7 @@
 
 namespace naf::db;
 
-class Select {
+class Select implements IteratorAggregate {
 	/**
 	 * @var PDO
 	 */
@@ -97,6 +97,14 @@ class Select {
 		$this->_appendLimit($sql);
 		
 		return $this->statement($sql, $data);
+	}
+	
+	/**
+	 * @return Iterator
+	 */
+	function getIterator()
+	{
+		return $this->export();
 	}
 	
 	private function baseSQL(&$data, $selection)
