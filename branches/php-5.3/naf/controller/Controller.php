@@ -11,6 +11,7 @@
 
 namespace naf::controller;
 use ::Naf;
+use naf::view::Ajax;
 
 abstract class Controller {
 	/**
@@ -30,7 +31,9 @@ abstract class Controller {
 	final function __construct()
 	{
 		$this->response = ::Naf::response();
-		$this->setUp();
+		
+		$args = func_get_args();
+		call_user_func_array(array($this, 'setUp'), $args);
 		
 		$class = get_class($this);
 		foreach ($this->postRequestHandlers as $trigger => $handler)
@@ -79,7 +82,7 @@ abstract class Controller {
 	 */
 	final function renderAjax($data, $forceAjaxResponse = false)
 	{
-		$v = new naf::view::Ajax($data, $forceAjaxResponse);
+		$v = new Ajax($data, $forceAjaxResponse);
 		$v->render();
 	}
 	
