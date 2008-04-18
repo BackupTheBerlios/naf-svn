@@ -66,9 +66,15 @@ class Naf_Image {
 	 * @return bool Alwayse TRUE
 	 * @throws Naf_Image_Exception
 	 */
-	function inscribe($width, $height)
+	function inscribe($width, $height, $scaleDownOnly = true, $r = 255, $g = 255, $b = 255)
 	{
-		$this->_createDestinationImage($width, $height);
+		if ($scaleDownOnly && ($this->_width >= $width) && ($this->_height >= $height))
+		{
+			$width = $this->_width;
+			$height = $this->_height;
+		}
+		
+		$this->_createDestinationImage($width, $height, $r, $g, $b);
 
 		if ($this->_width > $this->_height)
 		{
@@ -189,12 +195,14 @@ class Naf_Image {
 		return true;
 	}
 	
-	protected function _createDestinationImage($width, $height)
+	protected function _createDestinationImage($width, $height, $r = 255, $g = 255, $b = 255)
 	{
 		if (is_resource($this->_destination))
 			$this->_source = $this->_destination;
 		
 		$this->_destination = call_user_func_array($this->_createImageCallback, array($width, $height));
+		$color = imagecolorallocate($this->_destination, $r, $g, $b);
+		imagefill($this->_destination, $color);
 	}
 	
 	protected function _checkDestinationImage()
