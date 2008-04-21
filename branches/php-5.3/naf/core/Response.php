@@ -242,6 +242,14 @@ class Response {
 		$this->setAjaxResponse(null, $data);
 	}
 	
+	function get($name, $default = null)
+	{
+		if (array_key_exists($name, $this->_data))
+			return $this->_data[$name];
+		else
+			return $default;
+	}
+	
 	function __get($name)
 	{
 		if (array_key_exists($name, $this->_data))
