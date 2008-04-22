@@ -263,7 +263,7 @@ class Naf {
 				}
 				
 				$handler->$trigger($_POST);
-				LNaf::response()->setView($view);
+				self::response()->setView($view);
 				return true;
 			}
 		}
