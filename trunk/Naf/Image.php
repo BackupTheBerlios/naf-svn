@@ -68,7 +68,7 @@ class Naf_Image {
 	 */
 	function inscribe($width, $height, $scaleDownOnly = true, $r = 255, $g = 255, $b = 255)
 	{
-		if ($scaleDownOnly && ($this->_width >= $width) && ($this->_height >= $height))
+		if ($scaleDownOnly && ($width >= $this->_width) && ($height >= $this->_height))
 		{
 			$width = $this->_width;
 			$height = $this->_height;
@@ -202,7 +202,7 @@ class Naf_Image {
 		
 		$this->_destination = call_user_func_array($this->_createImageCallback, array($width, $height));
 		$color = imagecolorallocate($this->_destination, $r, $g, $b);
-		imagefill($this->_destination, $color);
+		imagefill($this->_destination, 0, 0, $color);
 	}
 	
 	protected function _checkDestinationImage()
