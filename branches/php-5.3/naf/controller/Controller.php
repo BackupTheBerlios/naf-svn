@@ -12,6 +12,7 @@
 namespace naf::controller;
 use ::Naf;
 use naf::view::Ajax;
+use naf::view::AjaxError;
 
 abstract class Controller {
 	/**
@@ -91,7 +92,7 @@ abstract class Controller {
 	 */
 	final function renderAjaxError($errorList, $forceAjaxResponse = false)
 	{
-		$v = new naf::view::AjaxError($errorList, $forceAjaxResponse);
+		$v = new AjaxError($errorList, $forceAjaxResponse);
 		$v->render();
 	}
 }
