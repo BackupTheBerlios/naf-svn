@@ -233,6 +233,11 @@ class ActiveRecord {
 		return $this->data;
 	}
 	
+	function json()
+	{
+		return json_encode($this->data);
+	}
+	
 	/**
 	 * Save a row
 	 *
