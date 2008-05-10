@@ -26,15 +26,13 @@ abstract class Controller {
 	protected $response;
 	
 	/**
-	 * Constructor. This method is marked final,
-	 * and it is a template-method (calls $this->setUp())
+	 * Constructor.
+	 * 
+	 * DO NOT FORGET TO CALL parent::__construct() in child classes' constructors!
 	 */
-	final function __construct()
+	function __construct()
 	{
-		$this->response = ::Naf::response();
-		
-		$args = func_get_args();
-		call_user_func_array(array($this, 'setUp'), $args);
+		$this->response = Naf::response();
 		
 		$class = get_class($this);
 		foreach ($this->postRequestHandlers as $trigger => $handler)
@@ -45,12 +43,6 @@ abstract class Controller {
 			}
 		}
 	}
-	
-	/**
-	 * YOUR SETUP HERE
-	 */
-	protected  function setUp()
-	{}
 	
 	/**
 	 * Run this controller. This method is marked final,
