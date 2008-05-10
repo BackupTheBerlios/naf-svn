@@ -110,7 +110,7 @@ class Select implements IteratorAggregate, Countable {
 	private function baseSQL(&$data, $selection)
 	{
 		$sql = "SELECT " . $selection . " FROM " . $this->from;
-		$data = $this->_appendWhere($sql, $where);
+		$data = $this->_appendWhere($sql, $this->filters);
 		return $sql;
 	}
 	
