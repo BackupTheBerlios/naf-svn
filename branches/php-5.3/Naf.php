@@ -71,6 +71,10 @@ class Naf {
 	{
 		return self::$settings;
 	}
+	static function importConfig($settings)
+	{
+		return self::$settings = array_merge(self::$settings, $settings);
+	}
 	/**
 	 * @param string $key
 	 * @param mixed $value
