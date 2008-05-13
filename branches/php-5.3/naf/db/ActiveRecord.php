@@ -74,7 +74,7 @@ class ActiveRecord {
 		$sql = 'INSERT INTO ' . (static::$table) . ' (' . implode(', ', array_keys($row)) . 
 				') VALUES (?' . str_repeat(', ?', count($row) - 1) . ')';
 		static::statement($sql, array_values($row));
-		return (int) static::$connection->lastInsertId(static::getSequence());
+		return (int) static::getConnection()->lastInsertId(static::getSequence());
 	}
 	
 	/**
@@ -143,7 +143,7 @@ class ActiveRecord {
 	{
 		$s = new Select(static::$table, $cols);
 		return $s->addFilters($where)
-			->setConnection(static::$connection)
+			->setConnection(static::getConnection())
 			->setFetchMode($fetchMode ? $fetchMode : static::$fetchMode);
 	}
 	/**
@@ -424,12 +424,22 @@ class ActiveRecord {
 			return false;
 	}
 	
+	static function getConnection()
+	{
+		if (null === static::$connection)
+		{
+			ActiveRecord::setConnection(::Naf::pdo());
+		}
+		
+		return static::$connection;
+	}
+	
 	/**
 	 * @return PDOStatement
 	 */
 	static protected function statement($sql, $data, $fetchMode = null)
 	{
-		$s = static::$connection->prepare($sql);
+		$s = static::getConnection()->prepare($sql);
 		$s->execute((array) $data);
 		static::setupFetchMode($s, $fetchMode);
 		return $s;
