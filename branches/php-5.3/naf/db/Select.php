@@ -157,6 +157,26 @@ class Select implements IteratorAggregate, Countable {
 	{
 		return $this->order;
 	}
+	function from($from)
+	{
+		$this->from = $from;
+		return $this;
+	}
+	function setSelection($selection)
+	{
+		$this->selection = $selection;
+		return $this;
+	}
+	function where($where, $binds = null)
+	{
+		if (is_string($where))
+		{
+			return $this->addFilter($where, $binds);
+		} else {
+			assert(is_array($where));
+			return $this->addFilters($where);
+		}
+	}
 	final function addFilters($filters)
 	{
 		foreach ((array) $filters as $sql => $data)
