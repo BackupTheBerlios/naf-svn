@@ -21,9 +21,20 @@ class Naf {
 	/**
 	 * @var array
 	 */
-	static private $settings = array(
-		'autoload_map' => array('naf' => NAF_ROOT)
-	);
+	static private $settings = array();
+	
+	/**
+	 * Autoloaded libraries a mapped here
+	 *
+	 * @var array (LIBRARY-NAME => LIBRARY-ROOT-FOLDER)
+	 */
+	static private $autoload_map = array('naf' => NAF_ROOT);
+	/**
+	 * Default library root
+	 *
+	 * @var string
+	 */
+	static private $defaultLibraryRoot = NAF_ROOT;
 	
 	/**
 	 * @var Naf_Response
@@ -54,15 +65,12 @@ class Naf {
 		include $filename;
 		if (isset($settings))
 		{
-			self::$settings = array_merge(self::$settings, $settings);
+			self::importConfig($settings);
 		}
-		if ((! array_key_exists('autoload_map', self::$settings)) || 
-			(! is_array(self::$settings['autoload_map'])))
-		{
-			self::$settings['autoload_map'] = array('Naf' => dirname(__FILE__));
-		} elseif (! array_key_exists('Naf', self::$settings['autoload_map'])) {
-			self::$settings['autoload_map']['Naf'] = dirname(__FILE__);
-		}
+	}
+	static function loadLibraryMap($map)
+	{
+		self::$autoload_map = array_merge(self::$autoload_map, $map);
 	}
 	/**
 	 * @return array
@@ -74,6 +82,10 @@ class Naf {
 	static function importConfig($settings)
 	{
 		return self::$settings = array_merge(self::$settings, $settings);
+		if (isset($settings['autoload_map']))
+		{
+			self::loadLibraryMap($settings['autoload_map']);
+		}
 	}
 	/**
 	 * @param string $key
@@ -132,6 +144,11 @@ class Naf {
 		return self::currentUrl($params, "&amp;");
 	}
 
+	static function setDefaultLibraryRoot($dir)
+	{
+		self::$defaultLibraryRoot = $dir;
+	}
+	
 	/**
 	 * Autoload
 	 *
@@ -148,11 +165,11 @@ class Naf {
 			$libraryName = substr($class, 0, $p);
 		}
 		
-		if (array_key_exists($libraryName, self::$settings['autoload_map']))
+		if (array_key_exists($libraryName, self::$autoload_map))
 		{
-			$root = self::$settings['autoload_map'][$libraryName];
+			$root = self::$autoload_map[$libraryName];
 		} else {
-			$root = NAF_ROOT;
+			$root = self::$defaultLibraryRoot;
 		}
 		
 		if (is_file($filename = rtrim($root, "/") . "/" . str_replace('_', '/', $class) . '.php'))
