@@ -29,7 +29,8 @@ class ActiveRecord {
 	
 	static protected $registry = array();
 	
-	static protected $fetchMode = array(PDO::FETCH_ASSOC);
+	static private $defaultFetchMode = array(PDO::FETCH_ASSOC);
+	static protected $fetchModes = array();
 	
 	protected $data = array();
 	/**
@@ -50,15 +51,27 @@ class ActiveRecord {
 	 */
 	static function setFetchModeAssoc()
 	{
-		static::$fetchMode = array(PDO::FETCH_ASSOC);
+		self::$fetchModes[get_called_class()] = array(PDO::FETCH_ASSOC);
 	}
 	static function setFetchModeClass()
 	{
-		static::$fetchMode = array(PDO::FETCH_CLASS, get_called_class());
+		$cc = get_called_class();
+		self::$fetchModes[$cc] = array(PDO::FETCH_CLASS, $cc);
 	}
 	static function setFetchModeInto()
 	{
-		static::$fetchMode = array(PDO::FETCH_INTO, new get_called_class());
+		$cc = get_called_class();
+		self::$fetchModes[$cc] = array(PDO::FETCH_INTO, new $cc());
+	}
+	static private function getFetchMode($override = null)
+	{
+		if (null === $override)
+		{
+			$cc = get_called_class();
+			return isset(self::$fetchModes[$cc]) ? self::$fetchModes[$cc] : self::$defaultFetchMode;
+		} else {
+			return (array) $override;
+		}
 	}
 	/**-@*/
 	/**
@@ -144,7 +157,7 @@ class ActiveRecord {
 		$s = new Select(static::$table, $cols);
 		return $s->addFilters($where)
 			->setConnection(static::getConnection())
-			->setFetchMode($fetchMode ? $fetchMode : static::$fetchMode);
+			->setFetchMode(static::getFetchMode($fetchMode));
 	}
 	/**
 	 * @return int
@@ -441,7 +454,7 @@ class ActiveRecord {
 	{
 		$s = static::getConnection()->prepare($sql);
 		$s->execute((array) $data);
-		static::setupFetchMode($s, $fetchMode);
+		call_user_func_array(array($s, 'setFetchMode'), static::getFetchMode($fetchMode));
 		return $s;
 	}
 	/**
@@ -456,7 +469,7 @@ class ActiveRecord {
 		} else {
 			$fetchMode = (array) $fetchMode;
 		}
-		call_user_func_array(array($s, 'setFetchMode'), static::$fetchMode);
+		call_user_func_array(array($s, 'setFetchMode'), $fetchMode);
 	}
 	
 	static private function getSequence()
