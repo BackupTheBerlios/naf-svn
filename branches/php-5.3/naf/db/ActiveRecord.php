@@ -133,6 +133,21 @@ class ActiveRecord {
 	{
 		return (bool) static::statement('DELETE FROM ' . (static::$table) . ' WHERE ' . (static::$pk) . ' = ?', $id)->rowCount();
 	}
+	static function deleteAll($where)
+	{
+		$bound_vars = $and = array();
+		foreach ((array) $where as $key => $val)
+		{
+			if (is_string($key))
+			{
+				$and[] = $key;
+				$bound_vars = array_merge($bound_vars, $val);
+			} else {
+				$and[] = $val;
+			}
+		}
+		return (bool) static::statement('DELETE FROM ' . (static::$table) . ' WHERE (' . implode(') AND (', $and) . ')', $bound_vars)->rowCount();
+	}
 	/**
 	 * @param int $id
 	 * @param string $cols
