@@ -12,6 +12,8 @@
 
 namespace naf::view;
 
+use naf::core::Response;
+
 class PhpNative {
 	
 	/**
@@ -36,7 +38,7 @@ class PhpNative {
 	 *
 	 * @var string
 	 */
-	protected $_scriptPath;
+	protected $_scriptPath = array();
 	
 	/**
 	 * Whether print a footnote below the template, with time elapsed for the render.
@@ -53,7 +55,7 @@ class PhpNative {
 	 */
 	protected $_buffers = array();
 	
-	function __construct(Naf_Response $response)
+	function __construct(Response $response)
 	{
 		$this->_response = $response;
 		$this->_vars = ($this->_response->export());
@@ -86,7 +88,7 @@ class PhpNative {
 		
 		foreach ($this->_scriptPath as $dir)
 		{
-			if (is_file($viewFilename = $dir . $name . '.tpl.php'))
+			if (is_file($viewFilename = rtrim($dir, '/') . '/' . ltrim($name, '/') . '.tpl.php'))
 			{
 				if (is_array($localVars))
 				{
@@ -138,7 +140,7 @@ class PhpNative {
 		
 		error_reporting($er);
 		
-		throw new $this->exception404Class();
+		throw new naf::err::NotFoundError();
 	}
 	
 	function fetch($name, $localVars = null)
