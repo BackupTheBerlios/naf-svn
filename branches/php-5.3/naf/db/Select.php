@@ -8,6 +8,8 @@
 
 namespace naf::db;
 
+use ::Naf;// for default DB connection
+
 class Select implements IteratorAggregate, Countable {
 	/**
 	 * @var PDO
@@ -277,12 +279,23 @@ class Select implements IteratorAggregate, Countable {
 	
 	private function statement($sql, $data)
 	{
-		$c = $this->connection ?
-			$this->connection :
-			self::$defaultConnection;
-		$s = $c->prepare($sql);
+		$s = $this->getConnection()->prepare($sql);
 		$s->execute($data);
 		call_user_func_array(array($s, 'setFetchMode'), $this->fetchMode);
 		return $s;
+	}
+	/**
+	 * @return PDO
+	 */
+	function getConnection()
+	{
+		if ($this->connection)
+		{
+			return $this->connection;
+		} elseif (self::$defaultConnection) {
+			return self::$defaultConnection;
+		} else {
+			return Naf::pdo();
+		}
 	}
 }
