@@ -224,7 +224,8 @@ class Response {
 	function setAjaxResponse($errorList, $data = null)
 	{
 		$this->_data['ajax'] = array(
-			'errorList' => (array) $errorList,
+			'errorList' => ($errorList === null) ? null : (array) $errorList,
+			'error_list' => ($errorList === null) ? null : (array) $errorList,
 			'data' => $data);
 	}
 	/**
