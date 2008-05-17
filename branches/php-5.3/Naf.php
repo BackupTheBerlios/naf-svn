@@ -238,16 +238,16 @@ class Naf {
 			self::$pdo = new PDO(
 				self::$settings['database']['dsn'],
 				self::$settings['database']['username'],
-				self::$settings['database']['password']
+				self::$settings['database']['password'],
+				array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION)
 			);
-			self::$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			foreach ((array) @self::$settings['database']['startup_queries'] as $sql)
+			{
+				self::$pdo->exec($sql);
+			}
 			if ('mysql' == self::$pdo->getAttribute(PDO::ATTR_DRIVER_NAME))
 			{
 				self::$pdo->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
-				$charset = isset(self::$settings['database']['charset']) ? 
-					self::$settings['database']['charset'] : 
-					'utf8';
-				self::$pdo->query("SET NAMES $charset");
 			}
 			return self::$pdo;
 		}
