@@ -45,6 +45,13 @@ class ActiveRecord {
 	 */
 	protected $setters = array();
 	
+	/**
+	 * Aggregated objects
+	 *
+	 * @var object[]
+	 */
+	private $aggregates = array();
+	
 	/**@+
 	 * Control over result set fetching.
 	 * @return void
@@ -219,6 +226,30 @@ class ActiveRecord {
 		}
 		
 		$this->setup();
+	}
+	
+	/**
+	 * Get aggregated object by name
+	 */
+	protected function getAggregate($name)
+	{
+		if (! isset($this->aggregates[$name]))
+		{
+			if (! method_exists($this, $createMethod = 'createAggregate' . $name);
+			{
+				throw new Exception(__METHOD__ . ": was unable to create $name aggregate due to absense of $createMethod");
+			}
+			
+			$this->aggregates[$name] = $this->$createMethod();
+		}
+		return $this->aggregates[$name];
+	}
+	/**
+	 * set aggregated object
+	 */
+	protected function setAggregate($name, $object)
+	{
+		$this->aggregates[$name] = $object;
 	}
 	
 	/**
