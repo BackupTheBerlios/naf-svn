@@ -142,6 +142,22 @@ class ActiveRecord {
 	}
 	
 	/**
+	 * Find an existing table row by ID,
+	 * or create a new instance of an appropriate ActiveRecord class - 
+	 * should the $id be empty
+	 * @return ActiveRecord
+	 */
+	static function findOrCreate($id)
+	{
+		if ($id)
+		{
+			return static::find($id);
+		} else {
+			return new get_called_class();
+		}
+	}
+	
+	/**
 	 * @param array $where conditions for the WHERE SQL clause
 	 * @param string $cols
 	 * @param int | array $fetchMode - per-call fetching mode overriding static::$fetchMode value
