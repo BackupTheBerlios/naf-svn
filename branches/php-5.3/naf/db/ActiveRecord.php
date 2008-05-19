@@ -223,7 +223,7 @@ class ActiveRecord {
 	 */
 	protected function getAggregate($name)
 	{
-		if (! isset($this->aggregates[$name]))
+		if (! array_key_exists($name, $this->aggregates))
 		{
 			if (! method_exists($this, $createMethod = 'createAggregate' . $name))
 			{
