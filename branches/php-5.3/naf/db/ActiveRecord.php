@@ -29,9 +29,6 @@ class ActiveRecord {
 	
 	static protected $registry = array();
 	
-	static private $defaultFetchMode = array(PDO::FETCH_ASSOC);
-	static protected $fetchModes = array();
-	
 	protected $data = array();
 	/**
 	 * @var naf::util::Validator
@@ -52,34 +49,6 @@ class ActiveRecord {
 	 */
 	private $aggregates = array();
 	
-	/**@+
-	 * Control over result set fetching.
-	 * @return void
-	 */
-	static function setFetchModeAssoc()
-	{
-		self::$fetchModes[get_called_class()] = array(PDO::FETCH_ASSOC);
-	}
-	static function setFetchModeClass()
-	{
-		$cc = get_called_class();
-		self::$fetchModes[$cc] = array(PDO::FETCH_CLASS, $cc);
-	}
-	static function setFetchModeInto()
-	{
-		$cc = get_called_class();
-		self::$fetchModes[$cc] = array(PDO::FETCH_INTO, new $cc());
-	}
-	static private function getFetchMode($override = null)
-	{
-		if (null === $override)
-		{
-			$cc = get_called_class();
-			return isset(self::$fetchModes[$cc]) ? self::$fetchModes[$cc] : self::$defaultFetchMode;
-		} else {
-			return (array) $override;
-		}
-	}
 	/**-@*/
 	/**
 	 * Insert a new row
@@ -159,13 +128,17 @@ class ActiveRecord {
 	 * @param int $id
 	 * @param string $cols
 	 * @param int | array $fetchMode - per-call fetching mode overriding static::$fetchMode value
-	 * @return Record | array depending on $fetchMode and static::$fetchMode values
+	 * @return ActiveRecord
 	 */
-	static function find($id, $cols = "*", $fetchMode = null)
+	static function find($id)
 	{
-		$sql = "SELECT $cols FROM " . (static::$table) . " WHERE id = ?";
-		$s = static::statement($sql, $id, $fetchMode);
-		return $s->fetch();
+		if (isset(self::$registry[$registry_key = get_called_class() . '-' . $id]))
+		{
+			return self::$registry[$registry_key];
+		}
+		$sql = "SELECT * FROM " . (static::$table) . " WHERE id = ?";
+		$s = static::statement($sql, $id);
+		return self::$registry[$registry_key] = $s->fetch();
 	}
 	
 	/**
@@ -179,7 +152,7 @@ class ActiveRecord {
 		$s = new Select(static::$table, $cols);
 		return $s->addFilters($where)
 			->setConnection(static::getConnection())
-			->setFetchMode(static::getFetchMode($fetchMode));
+			->setFetchMode(array(PDO::FETCH_CLASS, get_called_class()));
 	}
 	/**
 	 * @return int
@@ -235,7 +208,7 @@ class ActiveRecord {
 	{
 		if (! isset($this->aggregates[$name]))
 		{
-			if (! method_exists($this, $createMethod = 'createAggregate' . $name);
+			if (! method_exists($this, $createMethod = 'createAggregate' . $name))
 			{
 				throw new Exception(__METHOD__ . ": was unable to create $name aggregate due to absense of $createMethod");
 			}
@@ -331,8 +304,8 @@ class ActiveRecord {
 	function load($id)
 	{
 		$this->reset();
-		if ($found = static::find($id, "*", PDO::FETCH_ASSOC))
-			return $this->data = $found;
+		if ($found = static::find($id))
+			return $this->data = $found->export();
 		else
 			return false;
 	}
@@ -500,7 +473,7 @@ class ActiveRecord {
 	{
 		$s = static::getConnection()->prepare($sql);
 		$s->execute((array) $data);
-		call_user_func_array(array($s, 'setFetchMode'), static::getFetchMode($fetchMode));
+		$s->setFetchMode(PDO::FETCH_CLASS, get_called_class());
 		return $s;
 	}
 	/**
