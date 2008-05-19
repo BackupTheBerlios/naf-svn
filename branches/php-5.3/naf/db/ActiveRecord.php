@@ -153,7 +153,8 @@ class ActiveRecord {
 		{
 			return static::find($id);
 		} else {
-			return new get_called_class();
+			$class = get_called_class();
+			return new $class;
 		}
 	}
 	
