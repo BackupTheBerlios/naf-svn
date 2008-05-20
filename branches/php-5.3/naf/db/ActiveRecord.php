@@ -299,7 +299,12 @@ class ActiveRecord {
 		
 		$rowData = array_intersect_key($this->data, static::$defaults);
 		if (empty($this->data[static::$pk]))
-			return $this->data[static::$pk] = static::insert($rowData);
+		{
+			$this->data[static::$pk] = static::insert($rowData);
+			// put the new instance into registry
+			self::$registry[get_class($this) . '-' . $this->data[static::$pk]] = $this;
+			return $this->data[static::$pk];
+		}
 		else
 			return static::update($rowData, $this->data[static::$pk]);
 	}
