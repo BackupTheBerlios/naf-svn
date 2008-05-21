@@ -151,7 +151,7 @@ class Pager implements Iterator {
 	 */
 	function url($page)
 	{
-		$this->queryParams['page'] = $page;
+		$this->queryParams['page'] = ($page == 1) ? null : $page;
 		return Naf::currentUrlXml($this->queryParams, $this->separator) . $this->getAnchor();
 	}
 	
