@@ -105,10 +105,11 @@ class Naf {
 	 */
 	static function url($path, $params = array(), $separator = "&")
 	{
-		$params = array_merge(self::$persistentUrlParams, $params);
-		$query = count($params) ? 
-			"?" . http_build_query($params, null, $separator) : 
-			"";
+		$query = http_build_query(array_merge(self::$persistentUrlParams, $params), null, $separator);
+		if (strlen($query))
+		{
+			$query = '?' . $query;
+		}
 		return $path . $query;
 	}
 	/**
