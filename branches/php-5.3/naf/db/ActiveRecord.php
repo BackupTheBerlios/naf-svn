@@ -117,6 +117,10 @@ class ActiveRecord {
 			if (is_string($key))
 			{
 				$and[] = $key;
+				if (null !== $val)
+				{
+					$val = (array) $val;
+				}
 				$bound_vars = array_merge($bound_vars, $val);
 			} else {
 				$and[] = $val;
