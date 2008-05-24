@@ -81,7 +81,7 @@ class Naf {
 	}
 	static function importConfig($settings)
 	{
-		return self::$settings = array_merge(self::$settings, $settings);
+		self::$settings = array_merge(self::$settings, $settings);
 		if (isset($settings['autoload_map']))
 		{
 			self::loadLibraryMap($settings['autoload_map']);
