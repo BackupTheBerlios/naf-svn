@@ -9,7 +9,9 @@
  * @version 1.0
  */
 
-class Naf_Acl {
+namespace naf::acl;
+
+class Acl {
 
 	/**
 	 * @var array
