@@ -17,7 +17,7 @@ class SmartLog extends AbstractLog
 	 */
 	function run()
 	{
-		if (PHP_SAPI == 'cli')
+		if ((PHP_SAPI == 'cli') || ('POST' == @$_SERVER['REQUEST_METHOD']))
 		{
 			$logger = new TextLog($this->exception);
 		} else {
