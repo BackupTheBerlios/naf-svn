@@ -223,18 +223,24 @@ class Select implements IteratorAggregate, Countable {
 		{
 			return array();
 		}
-		$binds = $and = array();
-		foreach ($this->filters as $condition => $bindsPart)
+		$bound_vars = $and = array();
+		foreach ($this->filters as $key => $val)
 		{
-			if (null === $bindsPart)
-				$bindsPart = array(null);
-			
-			$binds = array_merge($binds, (array) $bindsPart);
-			$and[] = $condition;
+			if (is_string($key))
+			{
+				$and[] = $key;
+				if (null !== $val)
+				{
+					$val = (array) $val;
+				}
+				$bound_vars = array_merge($bound_vars, $val);
+			} else {
+				$and[] = $val;
+			}
 		}
 		
 		$sql .= ' WHERE (' . implode(') AND (', $and) . ')';
-		return $binds;
+		return $bound_vars;
 	}
 	
 	final private function _appendGroupBy(&$sql)
