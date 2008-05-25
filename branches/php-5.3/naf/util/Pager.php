@@ -143,6 +143,11 @@ class Pager implements Iterator {
 		return (($this->pageNumber - 1) * $this->pageSize) + 1;
 	}
 	
+	function getEnd()
+	{
+		return min($this->getStart() + $this->pageSize - 1, $this->rows);
+	}
+	
 	/**
 	 * Generate URL
 	 *
