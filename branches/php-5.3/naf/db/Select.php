@@ -100,6 +100,37 @@ class Select implements IteratorAggregate, Countable {
 		
 		return $this->statement($sql, $data);
 	}
+	/**
+	 * A debug method, allowing to see the resulting SQL
+	 * 
+	 * NOTE: not portable, best suited for MySQL.
+	 *
+	 * @return string
+	 */
+	function sql()
+	{
+		$data = array();
+		$sql = $this->baseSQL($data, $this->selection);
+		
+		$this->_appendGroupBy($sql);
+		$this->_appendHaving($sql);
+		
+		$this->_appendOrder($sql);
+		$this->_appendLimit($sql);
+		
+		$sql_split = explode('?', $sql);
+		$sql_str = $sql_split[0];
+		foreach ($data as $i => $bound_var)
+		{
+			if (is_bool($bound_var))
+			{
+				$bound_var = (int) $bound_var;
+			}
+			$sql_str .= is_numeric($bound_var) ? $bound_var : "'$bound_var'";
+			$sql_str .= $sql_split[$i + 1];
+		}
+		return $sql_str;
+	}
 	
 	/**
 	 * @return Iterator
