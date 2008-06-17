@@ -15,7 +15,7 @@ namespace naf::db;
 use naf::util::Validator;
 use naf::err::NotFoundError;
 
-class ActiveRecord {
+class ActiveRecord implements ArrayAccess {
 	/**
 	 * @var PDO
 	 */
@@ -525,5 +525,25 @@ class ActiveRecord {
 		} else {
 			return static::$table . '_' . static::$pk . '_seq';
 		}
+	}
+	
+	/**
+	 * ArrayAccess methods
+	 */
+	function offsetExists($name)
+	{
+		return array_key_exists($name, $this->data);
+	}
+	function offsetGet($name)
+	{
+		return $this->__get($name);
+	}
+	function offsetSet($name, $value)
+	{
+		return $this->__set($name, $value);
+	}
+	function offsetUnset($name)
+	{
+		$this->$name = null;
 	}
 }
