@@ -84,7 +84,7 @@ class Pager implements Iterator {
 		
 		if (self::AUTORESOLVE === $pageNumber)
 		{
-			$pageNumber = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT, array('options' => array('min_range' => 1)));
+			$pageNumber = self::resolvePageNumber();
 		}
 		if (1 > (int) $pageNumber) $pageNumber = 1;
 		if (1 > (int) $pageSize) $pageSize = 20;
@@ -93,6 +93,16 @@ class Pager implements Iterator {
 		$this->pageSize = $pageSize;
 		
 		$this->queryParams = &$_GET;// we need to reference so that changes to $_GET affect us.
+	}
+	
+	static function resolvePageNumber()
+	{
+		if ($pageNumber = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT, array('options' => array('min_range' => 1))))
+		{
+			return $pageNumber;
+		} else {
+			return 1;
+		}
 	}
 	
 	function setAnchor($anchor)
