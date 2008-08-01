@@ -65,6 +65,13 @@ class Pager implements Iterator {
 	private $current = 1, $start, $end;
 	
 	/**
+	 * Whether all required calculations are already done
+	 *
+	 * @var bool
+	 */
+	private $finalized = false;
+	
+	/**
 	 * Constructor
 	 *
 	 * @param int $rows
@@ -106,24 +113,7 @@ class Pager implements Iterator {
 	 */
 	function render($view)
 	{
-		$this->pageCount = $this->calculatePageCount();
-		
-		if (1 >= $this->pageCount) return ;
-		
-		if ($this->maxDisplayedPages > 0)
-		{
-			$this->start = (floor(($this->pageNumber - 1)/ $this->maxDisplayedPages) * $this->maxDisplayedPages) + 1;
-			$this->end = min($this->pageCount, $this->start + $this->maxDisplayedPages - 1);
-			$this->start = max(1, min($this->start, $this->end - floor($this->maxDisplayedPages / 2)));
-		}
-		else
-		{
-			$this->start = 1;
-			$this->end = $this->pageCount;
-		}
-		
-		$this->current = $this->start;
-		
+		$this->finalize();
 		$view->pager = $this;
 		return $view->render($this->template);
 	}
@@ -249,5 +239,33 @@ class Pager implements Iterator {
 	function rewind()
 	{
 		$this->current = $this->start;
+	}
+	
+	function finalize()
+	{
+		if ($this->finalized)
+		{
+			return ;
+		}
+		
+		$this->pageCount = $this->calculatePageCount();
+		
+		if (1 >= $this->pageCount) return ;
+		
+		if ($this->maxDisplayedPages > 0)
+		{
+			$this->start = (floor(($this->pageNumber - 1)/ $this->maxDisplayedPages) * $this->maxDisplayedPages) + 1;
+			$this->end = min($this->pageCount, $this->start + $this->maxDisplayedPages - 1);
+			$this->start = max(1, min($this->start, $this->end - floor($this->maxDisplayedPages / 2)));
+		}
+		else
+		{
+			$this->start = 1;
+			$this->end = $this->pageCount;
+		}
+		
+		$this->current = $this->start;
+		
+		$this->finalized = true;
 	}
 }
