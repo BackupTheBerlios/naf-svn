@@ -260,8 +260,6 @@ class Pager implements Iterator {
 		
 		$this->pageCount = $this->calculatePageCount();
 		
-		if (1 >= $this->pageCount) return ;
-		
 		if ($this->maxDisplayedPages > 0)
 		{
 			$this->start = (floor(($this->pageNumber - 1)/ $this->maxDisplayedPages) * $this->maxDisplayedPages) + 1;
