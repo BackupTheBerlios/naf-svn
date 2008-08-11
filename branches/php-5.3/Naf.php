@@ -73,6 +73,21 @@ class Naf {
 		self::$autoload_map = array_merge(self::$autoload_map, $map);
 	}
 	/**
+	 * Get the root folder for a certain library that has been registered with loadLibraryMap
+	 *
+	 * @param string $library_name
+	 * @return string or bool FALSE when the library fails to be found
+	 */
+	static function getLibraryRoot($library_name)
+	{
+		if (isset(self::$autoload_map[$library_name]))
+		{
+			return self::$autoload_map[$library_name];
+		} else {
+			return false;
+		}
+	}
+	/**
 	 * @return array
 	 */
 	static function exportConfig()
