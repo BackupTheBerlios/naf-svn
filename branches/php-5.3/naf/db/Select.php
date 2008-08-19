@@ -263,6 +263,8 @@ class Select implements IteratorAggregate, Countable {
 				if (null !== $val)
 				{
 					$val = (array) $val;
+				} else {
+					$val = array(null);
 				}
 				$bound_vars = array_merge($bound_vars, $val);
 			} else {
