@@ -282,19 +282,19 @@ class Select implements IteratorAggregate, Countable {
 		return $bound_vars;
 	}
 	
-	final private function _appendGroupBy(&$sql)
+	final protected function _appendGroupBy(&$sql)
 	{
 		if (null !== $this->groupBy)
 			$sql .= ' GROUP BY ' . implode(', ', (array) $this->groupBy);
 	}
 	
-	final private function _appendHaving(&$sql)
+	final protected function _appendHaving(&$sql)
 	{
 		if (null !== $this->having)
 			$sql .= ' HAVING (' . implode(') AND (', (array) $this->having) . ')';
 	}
 	
-	final private function _appendOrder(&$sql)
+	final protected function _appendOrder(&$sql)
 	{
 		if (empty($this->order))
 			return ;
@@ -312,7 +312,7 @@ class Select implements IteratorAggregate, Countable {
 		$sql .= ' ORDER BY ' . implode(', ', $normalized);
 	}
 	
-	final private function _appendLimit(&$sql)
+	final protected function _appendLimit(&$sql)
 	{
 		if (! $this->pageNumber)
 		{
@@ -322,7 +322,7 @@ class Select implements IteratorAggregate, Countable {
 		$sql .= ' LIMIT ' . $this->pageSize . ' OFFSET ' . (($this->pageNumber - 1) * $this->pageSize);
 	}
 	
-	private function statement($sql, $data)
+	protected function statement($sql, $data)
 	{
 		$s = $this->getConnection()->prepare($sql);
 		$s->execute($data);
