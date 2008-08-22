@@ -123,9 +123,12 @@ class Naf {
 		$query = http_build_query(array_merge(self::$persistentUrlParams, $params), null, $separator);
 		if (strlen($query))
 		{
-			$query = '?' . $query;
+			return $path . '?' . $query;
+		} elseif (strlen($path)) {
+			return $path;
+		} else {
+			return '?';
 		}
-		return $path . $query;
 	}
 	/**
 	 * generate URL for use in XML documents
