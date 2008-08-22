@@ -139,8 +139,14 @@ class Select implements IteratorAggregate, Countable {
 	{
 		return $this->export();
 	}
-	
-	private function baseSQL(&$data, $selection)
+	/**
+	 * This method made protected as it turned out to useful sometimes to use it chils classes
+	 *
+	 * @param array $data
+	 * @param string $selection
+	 * @return string the resulting SQL query
+	 */
+	protected function baseSQL(&$data, $selection)
 	{
 		$sql = "SELECT " . $selection . " FROM " . $this->from;
 		$data = $this->_appendWhere($sql, $this->filters);
