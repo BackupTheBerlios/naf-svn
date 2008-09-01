@@ -291,14 +291,14 @@ class Validator {
 
 		foreach ($this->_rules as $index => $stack)
 		{
-			$output = filter_var_array($output, array_intersect_key($stack, $output));
-			foreach ($output as $key => $value)
+			$tmp_output = filter_var_array($output, array_intersect_key($stack, $output));
+			foreach ($tmp_output as $key => $value)
 			{
 				if (empty($this->_rules[$index][$key])) continue;
 				
 				if (FILTER_VALIDATE_BOOLEAN == $this->_rules[$index][$key]['filter'])
 				{
-					$output[$key] = (bool) $value;
+					$tmp_output[$key] = (bool) $value;
 				}
 				elseif (false === $value)
 				{
@@ -306,8 +306,9 @@ class Validator {
 				}
 			}
 			
+			$output = array_merge($output, $tmp_output);
 		}
-		
+
 		$output = array_merge($input, $output);
 		if ($ok = $this->_result->ok())
 			$this->_result->import($output);
