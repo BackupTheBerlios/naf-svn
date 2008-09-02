@@ -399,7 +399,7 @@ class ActiveRecord implements ArrayAccess {
 	/**
 	 * Get validator for the row to be inserted/updated
 	 *
-	 * @return Nafvalidator
+	 * @return Validator
 	 */
 	final function validator()
 	{
@@ -410,13 +410,17 @@ class ActiveRecord implements ArrayAccess {
 	}
 	/**
 	 * Shortcut for $this->validator()->result()->getErrorList();
-	 *
+	 * @return array
 	 */
 	final function getErrorList()
 	{
 		return $this->validator()->result()->getErrorList();
 	}
-	
+	/**
+	 * A commonly used setter
+	 * @param mixed $value
+	 * @return mixed
+	 */
 	function nullSetter($value)
 	{
 		if (empty($value))
@@ -426,7 +430,11 @@ class ActiveRecord implements ArrayAccess {
 			return $value;
 		}
 	}
-	
+	/**
+	 * A commonly used setter
+	 * @param mixed $value
+	 * @return mixed
+	 */
 	function zeroSetter($value)
 	{
 		if (empty($value))
@@ -436,11 +444,39 @@ class ActiveRecord implements ArrayAccess {
 			return $value;
 		}
 	}
+	/**
+	 * A commonly used validator-filter
+	 * @return Closure
+	 */
+	function getDateFilter()
+	{
+		return function($date) {
+			if ($ts = strtotime($date))
+			{
+				return date("Y-m-d", $ts);
+			}
+			return false;
+		};
+	}
+	/**
+	 * A commonly used validator-filter
+	 * @return Closure
+	 */
+	function getDateTimeFilter()
+	{
+		return function($date) {
+			if ($ts = strtotime($date))
+			{
+				return date("Y-m-d H:i:s", $ts);
+			}
+			return false;
+		};
+	}
 	
 	/**
 	 * Create validator for the row to be inserted/updated
 	 *
-	 * @return naf::util::Validator
+	 * @return Validator
 	 */
 	protected function _createValidator()
 	{
@@ -468,6 +504,25 @@ class ActiveRecord implements ArrayAccess {
 		}
 
 		return $value;
+	}
+	/**
+	 * it is a common case when for validation, we have to be sure
+	 * that an object exists in DB - that is specified by ID.
+	 * This method returns an appropriate finder - a Closure object
+	 * 
+	 * @param string $class_name the ActiveRecord-class name
+	 * @return Closure
+	 */
+	protected function getFinder($class_name)
+	{
+		return function($id) use ($class_name) {
+			if ($object = call_user_func(array($class_name, 'find'), $id))
+			{
+				return $object->id;
+			} else {
+				return false;
+			}
+		};
 	}
 	
 	protected function _check()
