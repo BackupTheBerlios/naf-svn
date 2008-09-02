@@ -5,10 +5,10 @@
  * Simple validation of input data, based on filter extension for PHP.
  * Filter extension is enabled by default since php 5.2.0
  * 
- * Naf_Validator supports fluent interface ( http://www.martinfowler.com/bliki/FluentInterface.html )
+ * Validator supports fluent interface ( http://www.martinfowler.com/bliki/FluentInterface.html )
  * 
  * example of usage:
- * $v = new Naf_Validator();
+ * $v = new Validator();
  * $v->addRequired('domain', 'Domain field is required')
  *		->addRule('domain', 
  *			array('filter' => FILTER_VALIDATE_URL, 'flags' => array(FILTER_FLAG_HOST_REQUIRED)), 
@@ -44,7 +44,7 @@ class Validator {
 	/**#@-*/
 	
 	/**
-	 * @var Naf_Validator_Result
+	 * @var Validator_Result
 	 */
 	protected $_result;
 	
@@ -61,7 +61,7 @@ class Validator {
 	 *
 	 * @param string $key
 	 * @param string $message
-	 * @return Naf_Validator
+	 * @return Validator
 	 */
 	function addRequired($key, $message)
 	{
@@ -76,7 +76,7 @@ class Validator {
 	 * @param string $key1
 	 * @param string $key2
 	 * @param string $message
-	 * @return Naf_Validator
+	 * @return Validator
 	 */
 	function addEquals($key1, $key2, $message)
 	{
@@ -92,7 +92,7 @@ class Validator {
 	 * @param string $key
 	 * @param array | int filter @see filter_* functions ( http://php.net/filter )
 	 * @param string $message
-	 * @return Naf_Validator
+	 * @return Validator
 	 */
 	function addRule($key, $filter, $message)
 	{
@@ -108,7 +108,7 @@ class Validator {
 	 * @param string $key
 	 * @param string $message
 	 * @param int $flags
-	 * @return Naf_Validator
+	 * @return Validator
 	 */
 	function addStringRule($key, $message, $flags = null)
 	{
@@ -122,7 +122,7 @@ class Validator {
 	 * @param string $key
 	 * @param string $message
 	 * @param int $flags
-	 * @return Naf_Validator
+	 * @return Validator
 	 */
 	function addRawStringRule($key, $message, $flags = null)
 	{
@@ -133,7 +133,7 @@ class Validator {
 	 * @param string $key
 	 * @param string $message
 	 * @param string $regexp
-	 * @return Naf_Validator
+	 * @return Validator
 	 */
 	function addRegexpRule($key, $message, $regexp)
 	{
@@ -145,7 +145,7 @@ class Validator {
 	/**
 	 * @param string $key
 	 * @param string $message
-	 * @return Naf_Validator
+	 * @return Validator
 	 */
 	function addEmailRule($key, $message)
 	{
@@ -155,7 +155,7 @@ class Validator {
 	/**
 	 * @param string $key
 	 * @param string $message
-	 * @return Naf_Validator
+	 * @return Validator
 	 */
 	function addUrlRule($key, $message)
 	{
@@ -165,7 +165,7 @@ class Validator {
 	/**
 	 * @param string $key
 	 * @param string $message
-	 * @return Naf_Validator
+	 * @return Validator
 	 */
 	function addIntegerRule($key, $message, $options = null)
 	{
@@ -175,7 +175,7 @@ class Validator {
 	/**
 	 * @param string $key
 	 * @param string $message
-	 * @return Naf_Validator
+	 * @return Validator
 	 */
 	function addFloatRule($key, $message, $flags = null)
 	{
@@ -185,7 +185,7 @@ class Validator {
 	/**
 	 * @param string $key
 	 * @param string $message
-	 * @return Naf_Validator
+	 * @return Validator
 	 */
 	function addBooleanRule($key, $message)
 	{
@@ -196,7 +196,7 @@ class Validator {
 	 * @param string $key
 	 * @param callback $callback
 	 * @param string $message
-	 * @return Naf_Validator
+	 * @return Validator
 	 */
 	function addCallbackRule($key, $callback, $message)
 	{
@@ -207,7 +207,7 @@ class Validator {
 	 * @param string $key
 	 * @param callback $callback
 	 * @param string $message
-	 * @return Naf_Validator
+	 * @return Validator
 	 */
 	function addDateRule($key, $message)
 	{
@@ -237,7 +237,7 @@ class Validator {
 	 * Perform validation check
 	 *
 	 * @param array $input
-	 * @return Naf_Validator_Result
+	 * @return Validator_Result
 	 */
 	function check($input)
 	{
@@ -257,7 +257,7 @@ class Validator {
 	}
 	
 	/**
-	 * @return Naf_Validator_Result
+	 * @return Validator_Result
 	 */
 	final function result()
 	{
@@ -322,7 +322,7 @@ class Validator {
 	}
 	
 	/**
-	 * @return Naf_Validator
+	 * @return Validator
 	 */
 	protected function _doAddRule($key, $filter, $message, $index)
 	{
