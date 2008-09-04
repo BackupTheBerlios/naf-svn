@@ -62,17 +62,7 @@ class ActiveRecord implements ArrayAccess {
 		
 		$sql = 'INSERT INTO ' . (static::$table) . ' (' . implode(', ', array_keys($row)) . 
 				') VALUES (?' . str_repeat(', ?', count($row) - 1) . ')';
-		$row_fixed_booleans = array();
-		foreach (array_values($row) as $val)
-		{
-			if (is_bool($val))
-			{
-				$row_fixed_booleans[] = $val ? 'true' : 'false';
-			} else {
-				$row_fixed_booleans[] = $val;
-			}
-		}
-		static::statement($sql, $row_fixed_booleans);
+		static::statement($sql, array_values($row));
 		return (int) static::getConnection()->lastInsertId(static::getSequence());
 	}
 	
@@ -563,6 +553,15 @@ class ActiveRecord implements ArrayAccess {
 	static protected function statement($sql, $data, $fetchMode = null)
 	{
 		$s = static::getConnection()->prepare($sql);
+		foreach (array_values($data) as $n => $value)
+		{
+			if (is_bool($value))
+			{// explicitly specify type
+				$s->bindValue($n + 1, $value, PDO::PARAM_BOOL);
+			} else {// rely on PDO
+				$s->bindValue($n + 1, $value);
+			}
+		}
 		$s->execute((array) $data);
 		$s->setFetchMode(PDO::FETCH_CLASS, get_called_class());
 		return $s;
