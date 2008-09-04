@@ -553,7 +553,7 @@ class ActiveRecord implements ArrayAccess {
 	static protected function statement($sql, $data, $fetchMode = null)
 	{
 		$s = static::getConnection()->prepare($sql);
-		foreach (array_values($data) as $n => $value)
+		foreach (array_values((array) $data) as $n => $value)
 		{
 			if (is_bool($value))
 			{// explicitly specify type
@@ -562,7 +562,7 @@ class ActiveRecord implements ArrayAccess {
 				$s->bindValue($n + 1, $value);
 			}
 		}
-		$s->execute((array) $data);
+		$s->execute();
 		$s->setFetchMode(PDO::FETCH_CLASS, get_called_class());
 		return $s;
 	}
