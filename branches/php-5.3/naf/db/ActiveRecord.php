@@ -62,7 +62,17 @@ class ActiveRecord implements ArrayAccess {
 		
 		$sql = 'INSERT INTO ' . (static::$table) . ' (' . implode(', ', array_keys($row)) . 
 				') VALUES (?' . str_repeat(', ?', count($row) - 1) . ')';
-		static::statement($sql, array_values($row));
+		$row_fixed_booleans = array();
+		foreach (array_values($row) as $val)
+		{
+			if (is_bool($val))
+			{
+				$row_fixed_booleans[] = $val ? 'true' : 'false';
+			} else {
+				$row_fixed_booleans[] = $val;
+			}
+		}
+		static::statement($sql, $row_fixed_booleans);
 		return (int) static::getConnection()->lastInsertId(static::getSequence());
 	}
 	
