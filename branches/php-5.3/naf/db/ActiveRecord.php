@@ -137,13 +137,18 @@ class ActiveRecord implements ArrayAccess {
 	static function find($id)
 	{
 		$id = (int) $id;
-		if (isset(self::$registry[$registry_key = get_called_class() . '-' . $id]))
+		$class = get_called_class();
+		if (isset(self::$registry[$registry_key = $class . '-' . $id]))
 		{
 			return self::$registry[$registry_key];
 		}
 		$sql = "SELECT * FROM " . (static::$table) . " WHERE id = ?";
 		$s = static::statement($sql, $id);
-		return self::$registry[$registry_key] = $s->fetch();
+		if (! $ret = $s->fetch())
+		{
+			$ret = new $class();
+		}
+		return self::$registry[$registry_key] = $found;
 	}
 	
 	/**
