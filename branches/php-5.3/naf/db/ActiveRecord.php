@@ -136,6 +136,7 @@ class ActiveRecord implements ArrayAccess {
 	 */
 	static function find($id)
 	{
+		$id = (int) $id;
 		if (isset(self::$registry[$registry_key = get_called_class() . '-' . $id]))
 		{
 			return self::$registry[$registry_key];
