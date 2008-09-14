@@ -126,7 +126,14 @@ class Select implements IteratorAggregate, Countable {
 			{
 				$bound_var = (int) $bound_var;
 			}
-			$sql_str .= is_numeric($bound_var) ? $bound_var : "'$bound_var'";
+			
+			if (is_numeric($bound_var)) {
+				$sql_str .= $bound_var;
+			} elseif (is_null($bound_var)) {
+				$sql_str .= 'NULL';
+			} else {
+				$sql_str .= "'$bound_var'";
+			}
 			$sql_str .= $sql_split[$i + 1];
 		}
 		return $sql_str;
