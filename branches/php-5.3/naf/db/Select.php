@@ -27,6 +27,12 @@ class Select implements IteratorAggregate, Countable {
 	 */
 	private $from, $selection;
 	/**
+	 * JOIN clause spec
+	 *
+	 * @var string
+	 */
+	private $join = array();
+	/**
 	 * @var array
 	 */
 	private $filters = array();
@@ -155,7 +161,7 @@ class Select implements IteratorAggregate, Countable {
 	 */
 	protected function baseSQL(&$data, $selection)
 	{
-		$sql = "SELECT " . $selection . " FROM " . $this->from;
+		$sql = "SELECT " . $selection . " FROM " . $this->from . ' ' . implode(' ', $this->join);
 		$data = $this->_appendWhere($sql, $this->filters);
 		return $sql;
 	}
@@ -167,6 +173,26 @@ class Select implements IteratorAggregate, Countable {
 		$this->_appendHaving($sql);
 		
 		return $this->statement($sql, $data)->fetchColumn();
+	}
+	
+	/**
+	 * Join to some table
+	 *
+	 * @param string $join_clause the full JOIN clause, f. e. LEFT JOIN table AS alias ON (...)
+	 * @param string $cols
+	 */
+	function join($join_clause, $cols)
+	{
+		$this->join[] = $join_clause;
+		if ($cols)
+		{
+			$this->selection .= ", " . $cols;
+		}
+	}
+	
+	function where($spec)
+	{
+		
 	}
 	
 	/**
