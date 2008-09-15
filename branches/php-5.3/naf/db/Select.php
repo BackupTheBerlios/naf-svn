@@ -221,7 +221,7 @@ class Select implements IteratorAggregate, Countable {
 	 */
 	function orderBy($order_by_clause)
 	{
-		$this->order = $order;
+		$this->order = $order_by_clause;
 		return $this;
 	}
 	/**
@@ -232,7 +232,7 @@ class Select implements IteratorAggregate, Countable {
 	 */
 	function groupBy($group_by_clause)
 	{
-		$this->groupBy = $groupBy;
+		$this->groupBy = $group_by_clause;
 		return $this;
 	}
 	/**
