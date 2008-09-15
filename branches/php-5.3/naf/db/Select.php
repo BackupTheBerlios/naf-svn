@@ -165,8 +165,13 @@ class Select implements IteratorAggregate, Countable {
 		$data = $this->_appendWhere($sql, $this->filters);
 		return $sql;
 	}
-	
-	function count($column = "*")
+	/**
+	 * Execute COUNT($expression)
+	 *
+	 * @param string $expression the SQL expression to be wrapped in COUNT()
+	 * @return int
+	 */
+	function count($expression = "*")
 	{
 		$data = array();
 		$sql = $this->baseSQL($data, "COUNT($column)");
@@ -189,33 +194,85 @@ class Select implements IteratorAggregate, Countable {
 			$this->selection .= ", " . $cols;
 		}
 	}
-	
 	/**
-	 * @param string $groupBy
+	 * Set WHERE clause.
+	 * If the first argument is a string - then addFilter() is called with arguments $where, $bound,
+	 * otherwise addFilters() is called with a $where argument
+	 *
+	 * @param string | array $where
+	 * @param mixed $bound
 	 * @return Select $this
 	 */
-	function setGroupBy($groupBy)
+	function where($where, $bound = null)
+	{
+		if (is_string($where))
+		{
+			return $this->addFilter($where, $bound);
+		} else {
+			assert(is_array($where));
+			return $this->addFilters($where);
+		}
+	}
+	/**
+	 * Set ORDER BY clause
+	 *
+	 * @param string $order_clause
+	 * @return Select $this
+	 */
+	function orderBy($order_by_clause)
+	{
+		$this->order = $order;
+		return $this;
+	}
+	/**
+	 * Set GROUP BY clause
+	 *
+	 * @param string $group_by_clause
+	 * @return Select $this
+	 */
+	function groupBy($group_by_clause)
 	{
 		$this->groupBy = $groupBy;
 		return $this;
 	}
 	/**
+	 * Set HAVING clause
+	 *
+	 * @param string $having
+	 * @return Select $this
+	 */
+	function having($having)
+	{
+		$this->having = $having;
+		return $this;
+	}
+	
+	/**
+	 * @deprecated use groupBy()
+	 * @param string $groupBy
+	 * @return Select $this
+	 */
+	function setGroupBy($groupBy)
+	{
+		return $this->groupBy($groupBy);
+	}
+	/**
+	 * @deprecated use having()
 	 * @param string $having
 	 * @return Select $this
 	 */
 	function setHaving($having)
 	{
-		$this->having = $having;
-		return $this;
+		return $this->having($having);
 	}
 	/**
+	 * @deprecated use orderBy()
 	 * @param string $order
 	 * @return Select $this
 	 */
 	function setOrder($order)
 	{
-		$this->order = $order;
-		return $this;
+		return $this->orderBy($order);
 	}
 	/**
 	 * @return string | array
@@ -224,26 +281,34 @@ class Select implements IteratorAggregate, Countable {
 	{
 		return $this->order;
 	}
+	/**
+	 * Set FROM clause
+	 *
+	 * @param string $from
+	 * @return Select $this
+	 */
 	function from($from)
 	{
 		$this->from = $from;
 		return $this;
 	}
+	/**
+	 * Set cloumns to be selected
+	 *
+	 * @param string $selection
+	 * @return Select $this
+	 */
 	function setSelection($selection)
 	{
 		$this->selection = $selection;
 		return $this;
 	}
-	function where($where, $binds = null)
-	{
-		if (is_string($where))
-		{
-			return $this->addFilter($where, $binds);
-		} else {
-			assert(is_array($where));
-			return $this->addFilters($where);
-		}
-	}
+	/**
+	 * Add filters from array
+	 *
+	 * @param string $from
+	 * @return Select $this
+	 */
 	final function addFilters($filters)
 	{
 		foreach ((array) $filters as $sql => $data)
@@ -253,6 +318,8 @@ class Select implements IteratorAggregate, Countable {
 		return $this;
 	}
 	/**
+	 * Add a single filter
+	 * 
 	 * @param string $sql
 	 * @param array $binds
 	 * @return Select $this
@@ -277,6 +344,10 @@ class Select implements IteratorAggregate, Countable {
 		return $this;
 	}
 	
+	/**
+	 * @param string $sql
+	 * @return Select $this
+	 */
 	final function removeFilter($sql) {
 		if (isset($this->filters[$sql])) unset($this->filters[$sql]);
 		return $this;
