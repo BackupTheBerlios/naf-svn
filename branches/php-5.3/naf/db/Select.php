@@ -190,11 +190,6 @@ class Select implements IteratorAggregate, Countable {
 		}
 	}
 	
-	function where($spec)
-	{
-		
-	}
-	
 	/**
 	 * @param string $groupBy
 	 * @return Select $this
