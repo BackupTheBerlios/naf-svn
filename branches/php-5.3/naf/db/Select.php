@@ -193,6 +193,7 @@ class Select implements IteratorAggregate, Countable {
 		{
 			$this->selection .= ", " . $cols;
 		}
+		return $this;
 	}
 	/**
 	 * Set WHERE clause.
