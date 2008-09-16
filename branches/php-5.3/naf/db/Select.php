@@ -153,7 +153,7 @@ class Select implements IteratorAggregate, Countable {
 		return $this->export();
 	}
 	/**
-	 * This method made protected as it turned out to useful sometimes to use it chils classes
+	 * This method made protected as it turned out to be useful sometimes to use it in child classes
 	 *
 	 * @param array $data
 	 * @param string $selection
@@ -174,7 +174,7 @@ class Select implements IteratorAggregate, Countable {
 	function count($expression = "*")
 	{
 		$data = array();
-		$sql = $this->baseSQL($data, "COUNT($column)");
+		$sql = $this->baseSQL($data, "COUNT($expression)");
 		$this->_appendHaving($sql);
 		
 		return $this->statement($sql, $data)->fetchColumn();
