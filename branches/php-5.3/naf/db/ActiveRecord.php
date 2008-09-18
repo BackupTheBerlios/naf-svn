@@ -392,8 +392,10 @@ class ActiveRecord implements ArrayAccess {
 	function __set($name, $value)
 	{
 		if (array_key_exists($name, $this->setters))
-			$this->data[$name] = call_user_func(array($this, $this->setters[$name]), $value);
-		else
+		{
+			$method = $this->setters[$name];
+			$this->data[$name] = $this->{$this->setters[$name]}($value);
+		} else
 			$this->data[$name] = $value;
 	}
 	
