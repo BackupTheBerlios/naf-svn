@@ -72,6 +72,13 @@ class Pager implements Iterator {
 	private $finalized = false;
 	
 	/**
+	 * URL format to use in sprintf
+	 *
+	 * @var string
+	 */
+	private $fmt;
+	
+	/**
 	 * Constructor
 	 *
 	 * @param int $rows
@@ -95,6 +102,11 @@ class Pager implements Iterator {
 		$this->queryParams = &$_GET;// we need to reference so that changes to $_GET affect us.
 	}
 	
+	/**
+	 * Automagically resolve page number
+	 *
+	 * @return int
+	 */
 	static function resolvePageNumber()
 	{
 		if ($pageNumber = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT, array('options' => array('min_range' => 1))))
@@ -105,11 +117,20 @@ class Pager implements Iterator {
 		}
 	}
 	
+	/**
+	 * Sometimes it is necessary to preserve the anchor part of the URL
+	 *
+	 * @param string $anchor
+	 */
 	function setAnchor($anchor)
 	{
 		$this->anchor = $anchor;
 	}
-	
+	/**
+	 * get the anchor part of the URL
+	 *
+	 * @return string
+	 */
 	function getAnchor()
 	{
 		return $this->anchor ? "#" . $this->anchor : '';
@@ -148,6 +169,42 @@ class Pager implements Iterator {
 		return min($this->getStart() + $this->pageSize - 1, $this->rows);
 	}
 	
+	function setFormat($fmt)
+	{
+		$this->fmt = $fmt;
+	}
+	
+	function getFormat()
+	{
+		if (null === $this->fmt)
+		{
+			$uri = $_SERVER['REQUEST_URI'];
+			if ($pos = strpos($uri, '?'))
+			{
+				$path = substr($uri, 0, $pos);
+			} else {
+				$path = $uri;
+			}
+			
+			$this->fmt = $path;
+			$params = $this->queryParams;
+			if (isset($params['page']))
+			{
+				unset($params['page']);
+			}
+			if (count($params))
+			{
+				$this->fmt .= '?' . http_build_query($params) . $this->separator . 'page=%d';
+			} else {
+				$this->fmt .= '?page=%d';
+			}
+			
+			$this->fmt .= $this->getAnchor();
+		}
+		
+		return $this->fmt;
+	}
+	
 	/**
 	 * Generate URL
 	 *
@@ -156,8 +213,7 @@ class Pager implements Iterator {
 	 */
 	function url($page)
 	{
-		$this->queryParams['page'] = ($page == 1) ? null : $page;
-		return Naf::currentUrlXml($this->queryParams, $this->separator) . $this->getAnchor();
+		return sprintf($this->getFormat(), $page);
 	}
 	
 	/**
