@@ -12,6 +12,7 @@
  */
 
 namespace naf::util;
+use naf::util::Upload::Fault;
 
 class Upload {
 	
@@ -110,7 +111,7 @@ class Upload {
 		
 		$destination = rtrim($destFolder, '/ ') . '/' . $name;
 		if (! @move_uploaded_file($this->_tmpName, $destination))
-			throw new Upload::Fault('File upload failed! Destination folder/file not writable?');
+			throw new Fault('File upload failed! Destination folder/file not writable?');
 		
 		return $destination;
 	}
@@ -135,7 +136,7 @@ class Upload {
 		elseif (count($this->_extensions) && 
 			! in_array(strtolower($this->getExtension()), $this->_extensions))
 		{
-			throw new Upload::Fault('Filename extension not allowed');
+			throw new Fault('Filename extension not allowed');
 		}
 		else
 			return true;
@@ -171,6 +172,6 @@ class Upload {
 				break;
 		}
 		
-		throw new Upload::Fault($message);
+		throw new Fault($message);
 	}
 }
