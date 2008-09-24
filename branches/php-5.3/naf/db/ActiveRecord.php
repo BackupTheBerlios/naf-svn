@@ -540,6 +540,9 @@ class ActiveRecord implements ArrayAccess {
 			return false;
 	}
 	
+	/**
+	 * @return PDO
+	 */
 	static function getConnection()
 	{
 		if (null === static::$connection)
