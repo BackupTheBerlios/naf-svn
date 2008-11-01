@@ -194,7 +194,8 @@ class Pager implements Iterator {
 			}
 			if (count($params))
 			{
-				$this->fmt .= '?' . http_build_query($params) . $this->separator . 'page=%d';
+				$this->fmt .= str_replace('%', '%%', '?' . http_build_query($params) . $this->separator . 'page=%d');
+				$this->fmt .= 'page=%d';
 			} else {
 				$this->fmt .= '?page=%d';
 			}
