@@ -237,7 +237,7 @@ class Naf {
 	static function setup()
 	{
 		set_error_handler(array(__CLASS__, 'errorHandler'));
-		set_exception_handler(array(__CLASS__, 'exceptionHandler'));
+		//set_exception_handler(array(__CLASS__, 'exceptionHandler'));
 		if (isset($_SERVER['SCRIPT_NAME']))
 		{
 			self::response()->setView(substr($_SERVER['SCRIPT_NAME'], 0, strrpos($_SERVER['SCRIPT_NAME'], '.')));
